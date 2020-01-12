@@ -103,7 +103,7 @@
     <string name="pref_title_notifications_pebblemsg">پیام‌های Pebble</string>
     <string name="pref_summary_notifications_pebblemsg">پشتیبانی از برنامه‌هایی که به Pebble بوسیله‌ی PebbleKit پیام می‌فرستند.</string>
     <string name="pref_title_notifications_generic">پشتیبانی از اعلان‌های عمومی</string>
-    <string name="pref_title_whenscreenon">...همچنین وقتی صفحه‌ی نمایش روشن است</string>
+    <string name="pref_title_whenscreenon">…همچنین وقتی صفحه‌ی نمایش روشن است</string>
     <string name="pref_title_notification_filter">حالت مزاحم نشوید</string>
     <string name="pref_summary_notification_filter">اعلان‌های ناخواسته در این حالت غیرفعال می‌شوند</string>
     <string name="pref_title_transliteration">نویسه‌گردانی (Transliteration، برای نمایش انگلیسی حروف فارسی و عربی)</string>
@@ -124,4 +124,5 @@
     <string name="pref_title_weather">هواشناسی</string>
     <string name="pref_title_weather_location">مکان تعیین شده برای هواشناسی (CM/LOS)</string>
     <string name="pref_blacklist">اضافه کردن برنامه‌ها به لیست سیاه</string>
+    <string name="mi2_prefs_button_press_broadcast_default_value" translatable="false">nodomain.freeyourgadget.gadgetbridge.ButtonPressed</string>
 </resources>

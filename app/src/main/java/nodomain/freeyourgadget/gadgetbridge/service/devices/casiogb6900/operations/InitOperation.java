@@ -1,4 +1,4 @@
-/*  Copyright (C) 2016-2018 Andreas Böhler
+/*  Copyright (C) 2019-2020 Andreas Böhler
 
     This file is part of Gadgetbridge.
 

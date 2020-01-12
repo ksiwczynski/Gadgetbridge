@@ -1,4 +1,4 @@
-/*  Copyright (C) 2018-2019 Johann C. Rode, Sergio Lopez
+/*  Copyright (C) 2018-2020 Carsten Pfeiffer, Johann C. Rode, Sergio Lopez
 
     This file is part of Gadgetbridge.
 
@@ -99,7 +99,7 @@ class AppMessageHandlerRealWeather extends AppMessageHandler {
             return CLOUD;
         } else if (conditionCode >= 907 && conditionCode < 957) {
             return STORM;
-        } else if (conditionCode == 905 || (conditionCode >= 957 && conditionCode < 900)) {
+        } else if (conditionCode == 905) {
             return STORM;
         } else if (conditionCode == 900) {
             return STORM;

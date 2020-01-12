@@ -1,4 +1,4 @@
-/*  Copyright (C) 2016-2019 Andreas Shimokawa, Carsten Pfeiffer, Daniele
+/*  Copyright (C) 2016-2020 Andreas Shimokawa, Carsten Pfeiffer, Daniele
     Gobbetti, José Rebelo
 
     This file is part of Gadgetbridge.
@@ -44,7 +44,7 @@ public abstract class RoidmiCoordinator extends AbstractDeviceCoordinator {
     }
 
     @Override
-    public int getBondingStyle(GBDevice device) {
+    public int getBondingStyle() {
         return BONDING_STYLE_BOND;
     }
 
@@ -133,6 +133,7 @@ public abstract class RoidmiCoordinator extends AbstractDeviceCoordinator {
         return true;
     }
 
+    @NonNull
     @Override
     public int[] getColorPresets() {
         return RoidmiConst.COLOR_PRESETS;

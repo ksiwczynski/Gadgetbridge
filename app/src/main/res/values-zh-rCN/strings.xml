@@ -7,7 +7,6 @@
     <string name="action_quit">退出</string>
     <string name="action_donate">捐赠</string>
     <string name="controlcenter_fetch_activity_data">同步</string>
-    <string name="controlcenter_start_sleepmonitor">睡眠检测器（ALPHA测试）</string>
     <string name="controlcenter_find_device">查找丢失的设备</string>
     <string name="controlcenter_take_screenshot">截图</string>
     <string name="controlcenter_connect">连接…</string>
@@ -42,19 +41,19 @@
     <string name="title_activity_calblacklist">阻止记录</string>
     <string name="title_activity_fw_app_insaller">FW/App 安装器</string>
     <string name="fw_upgrade_notice">您即将安装 %s 。</string>
-    <string name="fw_upgrade_notice_amazfitbip">即将在您的米动手表青春版(Amazfit Bip)上安装固件 %s 。 
-\n 
-\n请确保安装.fw文件，然后安装.res文件，最后安装.gps文件。 安装.fw文件后，手表将重新启动。 
-\n 
-\n注意：如果这些文件与之前安装的完全一样，则不必安装.res和.gps文件。 
-\n 
+    <string name="fw_upgrade_notice_amazfitbip">即将在您的米动手表青春版(Amazfit Bip)上安装固件 %s 。
+\n
+\n请确保安装.fw文件，然后安装.res文件，最后安装.gps文件。 安装.fw文件后，手表将重新启动。
+\n
+\n注意：如果这些文件与之前安装的完全一样，则不必安装.res和.gps文件。
+\n
 \n***继续需要您自担风险！</string>
-    <string name="fw_upgrade_notice_amazfitcor">您即将在您的米动手环(Amazfit Cor)上安装固件 %s 。 
-\n 
-\n请确保安装了 .fw 文件，然后安装 .rec 文件。 安装 .fw 文件后，手表将重新启动。 
-\n 
-\n注意：如果这些文件与之前安装的完全一样，则不必安装 .res 。 
-\n 
+    <string name="fw_upgrade_notice_amazfitcor">您即将在您的米动手环(Amazfit Cor)上安装固件 %s 。
+\n
+\n请确保安装了 .fw 文件，然后安装 .rec 文件。 安装 .fw 文件后，手表将重新启动。
+\n
+\n注意：如果这些文件与之前安装的完全一样，则不必安装 .res 。
+\n
 \n您需要自行承担风险！</string>
     <string name="fw_multi_upgrade_notice">您即将安装固件 %1$s 和 %2$s，代替当前在小米手环上的固件。</string>
     <string name="miband_firmware_known">该固件已经过测试，并且已知与 Gadgetbridge 兼容。</string>
@@ -199,7 +198,6 @@
     <string name="message_cannot_pair_no_mac">没有 MAC 地址通过, 不能配对。</string>
     <string name="preferences_category_device_specific_settings">设备特定设置</string>
     <string name="preferences_miband_settings">小米手环/米动手环设置</string>
-    <string name="preferences_amazfitbip_settings">米动手表青春版设置</string>
     <string name="male">男</string>
     <string name="female">女</string>
     <string name="other">其它</string>
@@ -218,7 +216,7 @@
     <string name="initializing">初始化中</string>
     <string name="busy_task_fetch_activity_data">获取活动数据</string>
     <string name="sleep_activity_date_range">从 %1$s 到 %2$s</string>
-    <string name="miband_prefs_wearside">佩戴在左手还是右手？</string>
+    <string name="prefs_wearside">佩戴在左手还是右手？</string>
     <string name="vibration_profile_short">短</string>
     <string name="vibration_profile_medium">中</string>
     <string name="vibration_profile_long">长</string>
@@ -244,7 +242,7 @@
     <string name="stats_y_axis_label">每分钟步数</string>
     <string name="control_center_find_lost_device">查找丢失的设备</string>
     <string name="control_center_cancel_to_stop_vibration">取消以停止振动。</string>
-    <string name="title_activity_charts">活动记录</string>
+    <string name="title_activity_charts">活动与睡眠</string>
     <string name="title_activity_set_alarm">设置闹钟</string>
     <string name="controlcenter_start_configure_alarms">设置闹钟</string>
     <string name="title_activity_alarm_details">闹钟列表</string>
@@ -277,7 +275,7 @@
     <string name="weeksleepchart_sleep_a_week">一周睡眠</string>
     <string name="weeksleepchart_today_sleep_description">今天睡眠，目标：%1$s</string>
     <string name="weekstepschart_steps_a_week">一周步数</string>
-    <string name="activity_sleepchart_activity_and_sleep">活动和睡眠记录</string>
+    <string name="activity_sleepchart_activity_and_sleep">活动</string>
     <string name="updating_firmware">固件更新中…</string>
     <string name="fwapp_install_device_not_ready">无法安装文件, 设备未就绪。</string>
     <string name="installhandler_firmware_name">%1$s: %2$s %3$s</string>
@@ -326,9 +324,9 @@
     <string name="dateformat_time">仅时间</string>
     <string name="dateformat_date_time">时间和日期</string>
     <string name="mi2_prefs_button_actions">按钮操作</string>
-    <string name="mi2_prefs_button_actions_summary">指定小米手环2按钮上的操作</string>
+    <string name="mi2_prefs_button_actions_summary">指定按钮按下时的操作</string>
     <string name="mi2_prefs_button_press_count">按钮按下计数</string>
-    <string name="mi2_prefs_button_press_count_summary">触发消息广播的按钮按数</string>
+    <string name="mi2_prefs_button_press_count_summary">触发事件的按钮按下按数 1.后续相同数量的按下创建事件 2.以此类推。</string>
     <string name="mi2_prefs_button_action">启用按钮操作</string>
     <string name="mi2_prefs_button_action_summary">对按下指定次数的按钮启用相应的操作</string>
     <string name="mi2_prefs_button_action_vibrate">启用手环震动</string>
@@ -465,7 +463,7 @@
     <string name="mi2_prefs_button_press_broadcast">要发送的广播消息</string>
     <string name="devicetype_pebble">Pebble</string>
     <string name="pref_summary_pebble_forcele">使用实验性 Pebble LE 以支持所有 Pebble ，代替 BT 经典连接。 这首先需要以非 LE 配对，然后以 Pebble LE 连接</string>
-    <string name="pref_summary_pebble_mtu_limit">如果您的 Pebble 2 / Pebble LE 无法正常工作，请尝试使用此设置来限制 MTU （有效范围 20-512 ）</string>
+    <string name="pref_summary_pebble_mtu_limit">如果您的 Pebble 2 / Pebble LE 无法正常工作，请尝试使用此设置来限制 MTU （有效范围 20–512 ）</string>
     <string name="pref_header_auto_export">自动导出</string>
     <string name="pref_title_auto_export_enabled">启用自动导出</string>
     <string name="pref_title_auto_export_location">导出位置</string>
@@ -474,7 +472,7 @@
     <string name="tap_connected_device_for_app_mananger">点按为已连接的设备管理应用</string>
     <string name="notif_export_failed_title">数据库导出失败！ 请检查您的设置。</string>
     <string name="miband_prefs_reserve_alarm_calendar">预警未来事件</string>
-    <string name="mi2_prefs_button_press_broadcast_summary">在指定按键次数后发送消息</string>
+    <string name="mi2_prefs_button_press_broadcast_summary">事件与广播消息一起发送。参数 `button_id` 将会自动添加到每条消息中。</string>
     <string name="DEVINFO_HR_VER">"心率： "</string>
     <string name="timeformat_am_pm">AM/PM</string>
     <string name="devicetype_vibratissimo">Vibratissimo</string>
@@ -486,12 +484,12 @@
     <string name="controlcenter_calibrate_device">校准设备</string>
     <string name="blacklist_all_for_notifications">添加所有通知到黑名单</string>
     <string name="whitelist_all_for_notifications">添加所有通知到白名单</string>
-    <string name="fw_upgrade_notice_miband3">您即将安装 小米手环3 的固件 %s 。 
-\n 
-\n请确保先安装 .fw 文件，再安装 .res 文件。您的手环将会在安装 .fw 文件后重启。 
-\n 
-\n注意：如果您已经安装相同版本的 .res 文件了，则无需安装。 
-\n 
+    <string name="fw_upgrade_notice_miband3">您即将安装 小米手环3 的固件 %s 。
+\n
+\n请确保先安装 .fw 文件，再安装 .res 文件。您的手环将会在安装 .fw 文件后重启。
+\n
+\n注意：如果您已经安装相同版本的 .res 文件了，则无需安装。
+\n
 \n风险自担！</string>
     <string name="pref_title_notifications_timeout">通知间隔最短时间</string>
     <string name="pref_title_rtl">从右到左</string>
@@ -503,15 +501,11 @@
     <string name="pref_title_pebble_gatt_clientonly">仅限 GATT 客户端</string>
     <string name="pref_summary_pebble_gatt_clientonly">这是仅为 Pebble 2 的选项，且为试验性质，如果您遇到连接性问题，请尝试</string>
     <string name="pref_title_pebble_always_ack_pebblekit">提前 ACK PebbleKit</string>
-    <string name="preferences_id115_settings">ID115 设置</string>
     <string name="prefs_screen_orientation">屏幕朝向</string>
     <string name="pref_auto_fetch">自动获取活动数据</string>
     <string name="pref_auto_fetch_summary">屏幕解锁时会自动获取。仅在设置了锁定机制才会有效！</string>
     <string name="pref_auto_fetch_limit_fetches">刷新最小间隔</string>
     <string name="pref_auto_fetch_limit_fetches_summary">每隔 %d 分钟刷新</string>
-    <string name="preferences_miband2_settings">小米手环2 设置</string>
-    <string name="preferences_miband3_settings">小米手环3 设置</string>
-    <string name="preferences_amazfitcor_settings">米动手环设置</string>s
     <string name="horizontal">横向</string>
     <string name="vertical">纵向</string>
     <string name="watch9_pairing_tap_hint">当您的手环震动时，晃动设备或者按下按钮。</string>
@@ -652,9 +646,6 @@
     <string name="zetime_calories_type">卡路里类型</string>
     <string name="zetime_calories_type_active">仅运动消耗的热量</string>
     <string name="zetime_calories_type_all">运行和非运动消耗的热量</string>
-    <string name="zetime_time_format">时间格式</string>
-    <string name="zetime_time_format_24h">24小时制</string>
-    <string name="zetime_time_format_12h">12小时制</string>
     <string name="zetime_date_format">日期格式</string>
     <string name="zetime_date_format_1">YY/MM/DD</string>
     <string name="zetime_date_format_2">DD/MM/YY</string>
@@ -693,14 +684,14 @@
     <string name="pref_title_authkey">认证密钥</string>
     <string name="pref_summary_authkey">将您想要连接的所有 Android 设备上的认证密钥更改为通用的密钥。默认所有设备的密钥是 0123456789@ABCDE</string>
     <string name="devicetype_bfh16">BFH-16</string>
-    <string name="fw_upgrade_notice_amazfitcor2">您即将在米动手环2(Amazfit Cor 2)上安装 %s 版本的固件。 
-\n 
-\n请确保先安装 .fw 文件，再安装 .res 文件。您的手环将会在安装了 .fw 文件后重启。 
-\n 
-\n备注：如果您安装的 .res 文件和之前相同，则无需安装 .res 文件。 
-\n 
-\n风险自担！ 
-\n 
+    <string name="fw_upgrade_notice_amazfitcor2">您即将在米动手环2(Amazfit Cor 2)上安装 %s 版本的固件
+\n
+\n请确保先安装 .fw 文件，再安装 .res 文件。您的手环将会在安装了 .fw 文件后重启
+\n
+\n备注：如果您安装的 .res 文件和之前相同，则无需安装 .res 文件
+\n
+\n风险自担！
+\n
 \n此功能未经测试，如果您的设备名为“Amazfit Band 2”，您可能需要刷入 BEATS_W 固件</string>
     <string name="dutch">荷兰语</string>
     <string name="turkish">土耳其语</string>
@@ -722,4 +713,109 @@
     <string name="prefs_hr_alarm_activity">运动期间的心率警报</string>
     <string name="prefs_hr_alarm_low">下限</string>
     <string name="prefs_hr_alarm_high">上限</string>
+    <string name="average">平均：%1$s</string>
+    <string name="pref_header_charts">图表设置</string>
+    <string name="pref_title_charts_average">在图表中显示平均值</string>
+    <string name="pref_title_charts_range">图表范围</string>
+    <string name="pref_charts_range_on">图表范围已设置为按月</string>
+    <string name="pref_charts_range_off">图表范围已设置为按周</string>
+    <string name="weekstepschart_steps_a_month">每月步数</string>
+    <string name="weeksleepchart_sleep_a_month">每月睡眠</string>
+    <string name="devicetype_mijia_lywsd02">米家智能闹钟</string>
+    <string name="menuitem_nfc">NFC</string>
+    <string name="pref_summary_expose_hr">当 Gadgetbridge 已连接时，允许其他应用实时访问心率数据</string>
+    <string name="pref_title_expose_hr">第三方实时心率数据访问</string>
+    <string name="pref_title_use_custom_font">使用自定义字体</string>
+    <string name="pref_summary_use_custom_font">如果您的设备使用自定义的字体固件或表情符号支持，请启用此选项</string>
+    <string name="activity_db_management_autoexport_explanation">数据库自动导出路径已经被设置为：</string>
+    <string name="activity_db_management_autoexport_label">自动导出</string>
+    <string name="activity_DB_ExportButton">导出数据库</string>
+    <string name="activity_DB_import_button">导入数据库</string>
+    <string name="activity_DB_test_export_button">立刻运行自动导出</string>
+    <string name="activity_DB_test_export_message">正在导出数据库…</string>
+    <string name="activity_DB_delete_legacy_button">删除旧数据库</string>
+    <string name="activity_DB_empty_button">清空数据库</string>
+    <string name="activity_db_management_empty_DB">清空数据库</string>
+    <string name="activity_db_management_exportimport_label">导入与导出</string>
+    <string name="activity_db_management_empty_db_warning">警告！当按下此按钮后，将会清空您的数据库并从零开始。</string>
+    <string name="appwidget_sleep_alarm_widget_label">睡眠闹钟</string>
+    <string name="widget_steps_label">步数：%1$02d</string>
+    <string name="widget_sleep_label">睡眠：%1$s</string>
+    <string name="widget_listing_label">状态与闹钟</string>
+    <string name="widget_set_alarm_after">多久后闹铃：</string>
+    <string name="widget_5_minutes">5 分钟</string>
+    <string name="widget_10_minutes">10 分钟</string>
+    <string name="widget_20_minutes">20 分钟</string>
+    <string name="widget_1_hour">1 小时</string>
+    <string name="pref_display_add_device_fab">连接新设备按钮</string>
+    <string name="pref_display_add_device_fab_on">总是可见</string>
+    <string name="pref_display_add_device_fab_off">仅当没有设备添加时可见</string>
+    <plurals name="widget_alarm_target_hours">
+        <item quantity="other">%d 小时</item>
+    </plurals>
+    <string name="activity_error_no_app_for_gpx">若需要查看活动轨迹，请安装一个能查看 GPX 文件的应用。</string>
+    <string name="preferences_makibes_hr3_settings">Makibes HR3 设置</string>
+    <string name="devicetype_makibes_hr3">Makibes HR3</string>
+    <string name="devicetype_amazfit_bip_lite">米动手表青春版 Lite</string>
+    <string name="prefs_find_phone">查找手机</string>
+    <string name="prefs_enable_find_phone">启用查找手机</string>
+    <string name="prefs_find_phone_summary">使用您的手环以在手机上播放铃声。</string>
+    <string name="prefs_find_phone_duration">铃声将持续数秒</string>
+    <string name="maximum_duration">持续</string>
+    <string name="discovery_need_to_enter_authkey">此设备需要认证密钥，请在设备上长按以输入密钥。具体请阅读 Wiki 。</string>
+    <string name="fw_upgrade_notice_amazfitbip_lite">您即将在米动手表青春版 Lite(Amazfit Bip Lite)上安装 %s 版本的固件
+\n
+\n请确保先安装 .fw 文件，再安装 .res 文件。您的手环将会在安装了 .fw 文件后重启
+\n
+\n备注：如果您安装的 .res 文件和之前相同，则无需安装 .res 文件
+\n
+\n风险自担！</string>
+    <string name="devicetype_amazfit_gtr">华米 GTR</string>
+    <string name="fw_upgrade_notice_amazfitgtr">即将在您的 华米 GTR (Amazfit GTR) 上安装固件 %s 。
+\n
+\n请确保先安装 .fw 文件，然后再安装 .res 文件，最后再安装 .gps 文件。您的手表将会安装了 .fw 文件后重启。
+\n
+\n注意：如果 .res 和 .gps 文件和上一个版本相同，您则无需安装。
+\n
+\n风险自担！</string>
+    <string name="pref_chart_heartrate_color_red">红</string>
+    <string name="pref_chart_heartrate_color_orange">橙</string>
+    <string name="pref_title_chart_heartrate_color">心率颜色</string>
+    <string name="pref_title_chart_sleep_rolling_24_hour">睡眠范围</string>
+    <string name="pref_chart_sleep_rolling_24_on">过去 24 小时</string>
+    <string name="pref_chart_sleep_rolling_24_off">中午到中午</string>
+    <string name="devicetype_amazfit_gts">米动 GTS</string>
+    <string name="fw_upgrade_notice_amazfitgts">您即将在 米动手表GTS(Amazfit GTS)上安装 %s 版本的固件
+\n
+\n请确保先安装 .fw 文件，再安装 .res 文件。您的手环将会在安装了 .fw 文件后重启。
+\n
+\n备注：如果您安装的 .res 文件和之前相同，则无需安装 .res 文件。
+\n
+\n风险自担！</string>
+    <string name="mi2_prefs_button_press_broadcast_default_value" translatable="false">nodomain.freeyourgadget.gadgetbridge.ButtonPressed</string>
+    <string name="devicetype_qhybrid">Fossil Q Hybrid</string>
+    <string name="preferences_qhybrid_settings">Q Hybrid 设置</string>
+    <string name="tasker_notification">播放 Q Hybrid 通知</string>
+    <string name="watch_not_connected">手表未连接</string>
+    <string name="qhybrid_vibration_strength">振动强度：</string>
+    <string name="qhybrid_goal_in_steps">目标步数</string>
+    <string name="qhybrid_time_shift">时移</string>
+    <string name="qhybrid_second_timezone_offset_relative_to_utc">相对于协调世界时的第二个时区偏移</string>
+    <string name="qhybrid_overwrite_buttons">覆盖按钮</string>
+    <string name="qhybrid_use_activity_hand_as_notification_counter">使用活动手作为通知计数</string>
+    <string name="qhybrid_prompt_million_steps">请将步数设置为100万来激活它。</string>
+    <string name="qhybrid_buttons_overwrite_success">按钮覆盖</string>
+    <string name="qhybrid_buttons_overwrite_error">覆盖按钮时出错</string>
+    <string name="qhybrid_offset_timezone">基于时区偏移</string>
+    <string name="qhybrid_changes_delay_prompt">修改可能需要几秒…</string>
+    <string name="qhybrid_offset_time_by">经由时间偏移</string>
+    <string name="pref_disable_new_ble_scanning">禁用新低功率蓝牙扫描</string>
+    <string name="pref_summary_disable_new_ble_scanning">若您的设备无法在扫描过程中发现，请选中此选项</string>
+    <string name="devicetype_banglejs">Bangle.js</string>
+    <string name="devicetype_y5">Y5</string>
+    <string name="prefs_button_single_press_action_selection_title">事件 1 操作</string>
+    <string name="prefs_button_double_press_action_selection_title">事件 2 操作</string>
+    <string name="prefs_button_triple_press_action_selection_title">事件 3 操作</string>
+    <string name="prefs_button_variable_actions">按下按钮时的详细设置</string>
+    <string name="prefs_button_long_press_action_selection_title">长按按钮的动作</string>
 </resources>

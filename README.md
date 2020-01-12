@@ -1,5 +1,4 @@
-**IF YOU WANT TO EDIT THE WIKI**, do so on [codeberg.org](https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki)
-The wiki on github.com is a read-only mirror, as is the git repo itself. Issues and PRs will move to codeberg summer 2019, if you want your issue/PR comments migrated properly, please create a codeberg acount before we will migrate.
+Gadgetbridge is now hosted on [codeberg.org](https://codeberg.org/Freeyourgadget/Gadgetbridge/)
 
 Gadgetbridge
 ============
@@ -28,69 +27,40 @@ vendor's servers.
 
 [List of changes](https://codeberg.org/Freeyourgadget/Gadgetbridge/src/master/CHANGELOG.md)
 
-## Supported Devices
+## Supported Devices (Some of them WIP and some of them without maintainer)
 * Amazfit Bip [Wiki](https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Amazfit-Bip)
+* Amazfit Bip Lite (NOT RECOMMENDED, NEEDS MI FIT WITH ACCOUNT ONCE) [Wiki](https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Amazfit-Bip-Lite)
 * Amazfit Cor [Wiki](https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Amazfit-Cor)
 * Amazfit Cor 2 [Wiki](https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Amazfit-Cor-2)
+* Amazfit GTR (NOT RECOMMENDED, NEEDS MI FIT WITH ACCOUNT ONCE) [Wiki](https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Amazfit-GTR)
+* Amazfit GTS (NOT RECOMMENDED, NEEDS MI FIT WITH ACCOUNT ONCE) [Wiki](https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Amazfit-GTS)
 * BFH-16
-* Casio GB-6900B (WIP)
+* Casio GB-6900B
+* Fossil Q Hybrid
 * HPlus Devices (e.g. ZeBand) [Wiki](https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/HPlus)
-* ID115 (WIP)
-* Lenovo Watch 9 (WIP)
+* ID115
+* JYou Y5
+* Lenovo Watch 9
 * Lenovo Watch X Plus (WIP)
-* Liveview (WIP)
+* Liveview
+* Makibes HR3
 * Mi Band, Mi Band 1A, Mi Band 1S [Wiki](https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Mi-Band)
 * Mi Band 2 [Wiki](https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Mi-Band-2)
 * Mi Band 3 [Wiki](https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Mi-Band-3)
-* Mi Band 4 (WIP, NOT RECOMMENDED, NEEDS MI FIT WITH ACCOUNT AND ROOT ONCE) [Wiki](https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Mi-Band-4)
+* Mi Band 4 (NOT RECOMMENDED, NEEDS MI FIT WITH ACCOUNT AND ROOT ONCE) [Wiki](https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Mi-Band-4)
 * Mi Scale 2 (currently only displays a toast after stepping on the scale)
-* NO.1 F1 (WIP)
+* NO.1 F1
 * Pebble, Pebble Steel, Pebble Time, Pebble Time Steel, Pebble Time Round [Wiki](https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Pebble)
 * Pebble 2 [Wiki](https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Pebble)
-* Teclast H10, H30 (WIP)
+* Teclast H10, H30
 * XWatch (Affordable Chinese Casio-like smartwatches)
 * Vibratissimo (experimental)
-* ZeTime (WIP) [Wiki](https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/MyKronoz-ZeTime)
+* ZeTime [Wiki](https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/MyKronoz-ZeTime)
 
 
 ## Features
 
 Please see [FEATURES.md](https://codeberg.org/Freeyourgadget/Gadgetbridge/src/master/FEATURES.md)
-
-## Getting Started (Pebble)
-
-Please [this wiki article](https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Pebble-Getting-Started) 
-
-## How to use (Mi Band 1+2)
-
-* Invoke the discovery activity  manually via the "+" button. It will ask you for some personal info that appears
-  to be needed for proper steps calculation on the band. If you do not provide these,
-  some hardcoded default "dummy" values will be used instead. 
-
-  When your Mi Band starts to vibrate and blink during the pairing process,
-  tap it quickly a few times in a row to confirm the pairing with the band.
-
-1. Configure other notifications as desired
-2. Go back to the "Gadgetbridge" activity
-3. Tap the Mi Band item to connect if you're not connected yet
-4. To test, chose "Debug" from the menu and play around
-
-**Known Issues:**
-
-* The initial connection to a Mi Band sometimes takes a little patience. Try to connect a few times, wait, 
-  and try connecting again. This only happens until you have "bonded" with the Mi Band, i.e. until it 
-  knows your MAC address. This behavior may also only occur with older firmware versions.
-* If you use other apps like Mi Fit, and "bonding" with Gadgetbridge does not work, please
-  try to unpair the band in the other app and try again with Gadgetbridge.
-* While all Mi Band devices are supported, some firmware versions might work better than others.
-  You can consult the [projects wiki pages](https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Mi-Band) 
-  to check if your firmware version is fully supported or if an upgrade/downgrade might be beneficial.
-* In order to display text notifications on the Mi Band 2, you have to [install a font on the band](https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Mi-Band-2).
-
-## Features (Liveview)
-
-* set time (automatically upon connection)
-* display notifications and vibrate
 
 ## Authors
 ### Core Team (in order of first code contribution)
@@ -110,11 +80,15 @@ Please [this wiki article](https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki
 * Andreas Böhler (Casio GB-6900B)
 * Jean-François Greffier (Mi Scale 2)
 * Johannes Schmitt (BFH-16)
+* Lukas Schwichtenberg (Makibes HR3)
+* Daniel Dakhno (Fossil Q Hybrid)
+* Gordon Williams (Bangle.js)
+* Pavel Elagin (JYou Y5)
 
 ## Contribute
 
 Contributions are welcome, be it feedback, bug reports, documentation, translation, research or code. Feel free to work
-on any of the open [issues](https://github.com/Freeyourgadget/Gadgetbridge/issues?q=is%3Aopen+is%3Aissue);
+on any of the open [issues](https://codeberg.org/Freeyourgadget/Gadgetbridge/issues);
 just leave a comment that you're working on one to avoid duplicated work.
 
 Translations can be contributed via https://hosted.weblate.org/projects/freeyourgadget/gadgetbridge/
@@ -133,7 +107,7 @@ Feel free to open an issue on our issue tracker, but please:
 1. Open Gadgetbridge's settings and check the option to write log files
 2. Reproduce the problem you encountered
 3. Check the logfile at /sdcard/Android/data/nodomain.freeyourgadget.gadgetbridge/files/gadgetbridge.log
-4. File an issue at https://github.com/Freeyourgadget/Gadgetbridge/issues/new and possibly provide the logfile
+4. File an issue at https://codeberg.org/Freeyourgadget/Gadgetbridge/issues/new and possibly provide the logfile
 
 Alternatively you may use the standard logcat functionality to access the log.
 

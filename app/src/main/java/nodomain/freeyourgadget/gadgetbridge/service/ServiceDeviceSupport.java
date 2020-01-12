@@ -1,6 +1,6 @@
-/*  Copyright (C) 2015-2019 Andreas Shimokawa, Carsten Pfeiffer, Daniele
-    Gobbetti, José Rebelo, Julien Pivotto, Kasha, Sebastian Kranz, Steffen
-    Liebergeld
+/*  Copyright (C) 2015-2020 Andreas Shimokawa, Carsten Pfeiffer, Daniel
+    Dakhno, Daniele Gobbetti, José Rebelo, Julien Pivotto, Kasha, Sebastian
+    Kranz, Steffen Liebergeld
 
     This file is part of Gadgetbridge.
 
@@ -111,6 +111,11 @@ public class ServiceDeviceSupport implements DeviceSupport {
     @Override
     public Context getContext() {
         return delegate.getContext();
+    }
+
+    @Override
+    public String customStringFilter(String inputString) {
+        return delegate.customStringFilter(inputString);
     }
 
     @Override

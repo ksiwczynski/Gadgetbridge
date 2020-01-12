@@ -1,4 +1,4 @@
-/*  Copyright (C) 2015-2019 Andreas Shimokawa, Carsten Pfeiffer, Daniele
+/*  Copyright (C) 2015-2020 Andreas Shimokawa, Carsten Pfeiffer, Daniele
     Gobbetti, Martin, Matthieu Baerts, Normano64, Pavel Elagin, Taavi Eomäe
 
     This file is part of Gadgetbridge.
@@ -46,6 +46,9 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -78,9 +81,13 @@ import nodomain.freeyourgadget.gadgetbridge.util.Prefs;
 import static nodomain.freeyourgadget.gadgetbridge.model.DeviceType.AMAZFITBIP;
 import static nodomain.freeyourgadget.gadgetbridge.model.DeviceType.AMAZFITCOR;
 import static nodomain.freeyourgadget.gadgetbridge.model.DeviceType.AMAZFITCOR2;
+import static nodomain.freeyourgadget.gadgetbridge.model.DeviceType.HPLUS;
+import static nodomain.freeyourgadget.gadgetbridge.model.DeviceType.ID115;
 import static nodomain.freeyourgadget.gadgetbridge.model.DeviceType.MIBAND;
 import static nodomain.freeyourgadget.gadgetbridge.model.DeviceType.MIBAND2;
 import static nodomain.freeyourgadget.gadgetbridge.model.DeviceType.MIBAND3;
+import static nodomain.freeyourgadget.gadgetbridge.model.DeviceType.MIBAND4;
+import static nodomain.freeyourgadget.gadgetbridge.model.DeviceType.ZETIME;
 import static nodomain.freeyourgadget.gadgetbridge.model.DeviceType.fromKey;
 import static nodomain.freeyourgadget.gadgetbridge.util.GB.NOTIFICATION_CHANNEL_ID;
 
@@ -99,7 +106,7 @@ public class GBApplication extends Application {
     private static SharedPreferences sharedPrefs;
     private static final String PREFS_VERSION = "shared_preferences_version";
     //if preferences have to be migrated, increment the following and add the migration logic in migratePrefs below; see http://stackoverflow.com/questions/16397848/how-can-i-migrate-android-preferences-with-a-new-version
-    private static final int CURRENT_PREFS_VERSION = 4;
+    private static final int CURRENT_PREFS_VERSION = 7;
     private static LimitedQueue mIDSenderLookup = new LimitedQueue(16);
     private static Prefs prefs;
     private static GBPrefs gbPrefs;
@@ -112,6 +119,7 @@ public class GBApplication extends Application {
     public static final String ACTION_QUIT
             = "nodomain.freeyourgadget.gadgetbridge.gbapplication.action.quit";
     public static final String ACTION_LANGUAGE_CHANGE = "nodomain.freeyourgadget.gadgetbridge.gbapplication.action.language_change";
+    public static final String ACTION_NEW_DATA = "nodomain.freeyourgadget.gadgetbridge.action.new_data";
 
     private static GBApplication app;
 
@@ -591,6 +599,58 @@ public class GBApplication extends Application {
         }
     }
 
+    private void migrateStringPrefToPerDevicePref(String globalPref, String globalPrefDefault, String perDevicePref, ArrayList<DeviceType> deviceTypes) {
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        String globalPrefValue = prefs.getString(globalPref, globalPrefDefault);
+        try (DBHandler db = acquireDB()) {
+            DaoSession daoSession = db.getDaoSession();
+            List<Device> activeDevices = DBHelper.getActiveDevices(daoSession);
+            for (Device dbDevice : activeDevices) {
+                SharedPreferences deviceSpecificSharedPrefs = GBApplication.getDeviceSpecificSharedPrefs(dbDevice.getIdentifier());
+                if (deviceSpecificSharedPrefs != null) {
+                    SharedPreferences.Editor deviceSharedPrefsEdit = deviceSpecificSharedPrefs.edit();
+                    DeviceType deviceType = fromKey(dbDevice.getType());
+
+                    if (deviceTypes.contains(deviceType)) {
+                        Log.i(TAG, "migrating global string preference " + globalPref + " for " + deviceType.name() + " " + dbDevice.getIdentifier() );
+                        deviceSharedPrefsEdit.putString(perDevicePref, globalPrefValue);
+                    }
+                    deviceSharedPrefsEdit.apply();
+                }
+            }
+            editor.remove(globalPref);
+            editor.apply();
+        } catch (Exception e) {
+            Log.w(TAG, "error acquiring DB lock");
+        }
+    }
+
+    private void migrateBooleanPrefToPerDevicePref(String globalPref, Boolean globalPrefDefault, String perDevicePref, ArrayList<DeviceType> deviceTypes) {
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        boolean globalPrefValue = prefs.getBoolean(globalPref, globalPrefDefault);
+        try (DBHandler db = acquireDB()) {
+            DaoSession daoSession = db.getDaoSession();
+            List<Device> activeDevices = DBHelper.getActiveDevices(daoSession);
+            for (Device dbDevice : activeDevices) {
+                SharedPreferences deviceSpecificSharedPrefs = GBApplication.getDeviceSpecificSharedPrefs(dbDevice.getIdentifier());
+                if (deviceSpecificSharedPrefs != null) {
+                    SharedPreferences.Editor deviceSharedPrefsEdit = deviceSpecificSharedPrefs.edit();
+                    DeviceType deviceType = fromKey(dbDevice.getType());
+
+                    if (deviceTypes.contains(deviceType)) {
+                        Log.i(TAG, "migrating global boolean preference " + globalPref + " for " + deviceType.name() + " " + dbDevice.getIdentifier() );
+                        deviceSharedPrefsEdit.putBoolean(perDevicePref, globalPrefValue);
+                    }
+                    deviceSharedPrefsEdit.apply();
+                }
+            }
+            editor.remove(globalPref);
+            editor.apply();
+        } catch (Exception e) {
+            Log.w(TAG, "error acquiring DB lock");
+        }
+    }
+
     private void migratePrefs(int oldVersion) {
         SharedPreferences.Editor editor = sharedPrefs.edit();
         if (oldVersion == 0) {
@@ -631,8 +691,9 @@ public class GBApplication extends Application {
                 DaoSession daoSession = db.getDaoSession();
                 List<Device> activeDevices = DBHelper.getActiveDevices(daoSession);
                 for (Device dbDevice : activeDevices) {
-                    SharedPreferences.Editor deviceSharedPrefsEdit = GBApplication.getDeviceSpecificSharedPrefs(dbDevice.getIdentifier()).edit();
-                    if (sharedPrefs != null) {
+                    SharedPreferences deviceSpecificSharedPrefs = GBApplication.getDeviceSpecificSharedPrefs(dbDevice.getIdentifier());
+                    if (deviceSpecificSharedPrefs != null) {
+                        SharedPreferences.Editor deviceSharedPrefsEdit = deviceSpecificSharedPrefs.edit();
                         String preferenceKey = dbDevice.getIdentifier() + "_lastSportsActivityTimeMillis";
                         long lastSportsActivityTimeMillis = sharedPrefs.getLong(preferenceKey, 0);
                         if (lastSportsActivityTimeMillis != 0) {
@@ -678,7 +739,7 @@ public class GBApplication extends Application {
                         switch (deviceType) {
                             case MIBAND:
                                 deviceSharedPrefsEdit.putBoolean("low_latency_fw_update", prefs.getBoolean("mi_low_latency_fw_update", true));
-                                deviceSharedPrefsEdit.putInt("device_time_offset_hours", prefs.getInt("mi_device_time_offset_hours", 0));
+                                deviceSharedPrefsEdit.putString("device_time_offset_hours", String.valueOf(prefs.getInt("mi_device_time_offset_hours", 0)));
                                 break;
                             case AMAZFITCOR:
                                 displayItems = prefs.getStringSet("cor_display_items", null);
@@ -707,9 +768,8 @@ public class GBApplication extends Application {
                         if (newLanguage != null) {
                             deviceSharedPrefsEdit.putString("language", newLanguage);
                         }
+                        deviceSharedPrefsEdit.apply();
                     }
-
-                    deviceSharedPrefsEdit.apply();
                 }
                 editor.remove("amazfitbip_language");
                 editor.remove("bip_display_items");
@@ -760,6 +820,78 @@ public class GBApplication extends Application {
                 Log.w(TAG, "error acquiring DB lock");
             }
         }
+        if (oldVersion < 5) {
+            try (DBHandler db = acquireDB()) {
+                DaoSession daoSession = db.getDaoSession();
+                List<Device> activeDevices = DBHelper.getActiveDevices(daoSession);
+                for (Device dbDevice : activeDevices) {
+                    SharedPreferences deviceSpecificSharedPrefs = GBApplication.getDeviceSpecificSharedPrefs(dbDevice.getIdentifier());
+                    if (deviceSpecificSharedPrefs != null) {
+                        SharedPreferences.Editor deviceSharedPrefsEdit = deviceSpecificSharedPrefs.edit();
+                        DeviceType deviceType = fromKey(dbDevice.getType());
+
+                        String newWearside = null;
+                        String newOrientation = null;
+                        String newTimeformat = null;
+                        switch (deviceType) {
+                            case AMAZFITBIP:
+                            case AMAZFITCOR:
+                            case AMAZFITCOR2:
+                            case MIBAND:
+                            case MIBAND2:
+                            case MIBAND3:
+                            case MIBAND4:
+                                newWearside = prefs.getString("mi_wearside", "left");
+                                break;
+                            case HPLUS:
+                                newWearside = prefs.getString("hplus_wrist", "left");
+                                newTimeformat = prefs.getString("hplus_timeformat", "24h");
+                                break;
+                            case ID115:
+                                newWearside = prefs.getString("id115_wrist", "left");
+                                newOrientation = prefs.getString("id115_screen_orientation", "horizontal");
+                                break;
+                            case ZETIME:
+                                newWearside = prefs.getString("zetime_wrist", "left");
+                                newTimeformat = prefs.getInt("zetime_timeformat", 1) == 2 ? "am/pm" : "24h";
+                                break;
+                        }
+                        if (newWearside != null) {
+                            deviceSharedPrefsEdit.putString("wearlocation", newWearside);
+                        }
+                        if (newOrientation != null) {
+                            deviceSharedPrefsEdit.putString("screen_orientation", newOrientation);
+                        }
+                        if (newTimeformat != null) {
+                            deviceSharedPrefsEdit.putString("timeformat", newTimeformat);
+                        }
+                        deviceSharedPrefsEdit.apply();
+                    }
+                }
+                editor.remove("hplus_timeformat");
+                editor.remove("hplus_wrist");
+                editor.remove("id115_wrist");
+                editor.remove("id115_screen_orientation");
+                editor.remove("mi_wearside");
+                editor.remove("zetime_timeformat");
+                editor.remove("zetime_wrist");
+
+            } catch (Exception e) {
+                Log.w(TAG, "error acquiring DB lock");
+            }
+        }
+        if (oldVersion < 6) {
+            migrateBooleanPrefToPerDevicePref("mi2_enable_button_action", false, "button_action_enable", new ArrayList<>(Collections.singletonList(MIBAND2)));
+            migrateBooleanPrefToPerDevicePref("mi2_button_action_vibrate", false, "button_action_vibrate", new ArrayList<>(Collections.singletonList(MIBAND2)));
+            migrateStringPrefToPerDevicePref("mi_button_press_count", "6", "button_action_press_count", new ArrayList<>(Collections.singletonList(MIBAND2)));
+            migrateStringPrefToPerDevicePref("mi_button_press_count_max_delay", "2000", "button_action_press_max_interval", new ArrayList<>(Collections.singletonList(MIBAND2)));
+            migrateStringPrefToPerDevicePref("mi_button_press_count_match_delay", "0", "button_action_broadcast_delay", new ArrayList<>(Collections.singletonList(MIBAND2)));
+            migrateStringPrefToPerDevicePref("mi_button_press_broadcast", "nodomain.freeyourgadget.gadgetbridge.ButtonPressed", "button_action_broadcast", new ArrayList<>(Collections.singletonList(MIBAND2)));
+        }
+        if (oldVersion < 7) {
+            migrateStringPrefToPerDevicePref("mi_reserve_alarm_calendar","0","reserve_alarms_calendar", new ArrayList<>(Arrays.asList(MIBAND, MIBAND2)));
+        }
+
         editor.putString(PREFS_VERSION, Integer.toString(CURRENT_PREFS_VERSION));
         editor.apply();
     }

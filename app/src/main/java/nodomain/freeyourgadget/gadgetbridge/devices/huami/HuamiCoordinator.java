@@ -1,5 +1,5 @@
-/*  Copyright (C) 2016-2019 Andreas Shimokawa, Carsten Pfeiffer, Daniele
-    Gobbetti, José Rebelo
+/*  Copyright (C) 2016-2020 Andreas Shimokawa, Carsten Pfeiffer, Daniele
+    Gobbetti, José Rebelo, Nephiel
 
     This file is part of Gadgetbridge.
 
@@ -197,6 +197,11 @@ public abstract class HuamiCoordinator extends AbstractDeviceCoordinator {
         return prefs.getStringSet(HuamiConst.PREF_DISPLAY_ITEMS, null);
     }
 
+    public static boolean getUseCustomFont(String deviceAddress) {
+        SharedPreferences prefs = GBApplication.getDeviceSpecificSharedPrefs(deviceAddress);
+        return prefs.getBoolean(HuamiConst.PREF_USE_CUSTOM_FONT, false);
+    }
+
     public static boolean getGoalNotification() {
         Prefs prefs = GBApplication.getPrefs();
         return prefs.getBoolean(MiBandConst.PREF_MI2_GOAL_NOTIFICATION, false);
@@ -249,6 +254,11 @@ public abstract class HuamiCoordinator extends AbstractDeviceCoordinator {
     public static boolean getBandScreenUnlock(String deviceAddress) {
         Prefs prefs = new Prefs(GBApplication.getDeviceSpecificSharedPrefs(deviceAddress));
         return prefs.getBoolean(MiBandConst.PREF_SWIPE_UNLOCK, false);
+    }
+
+    public static boolean getExposeHRThirdParty(String deviceAddress) {
+        Prefs prefs = new Prefs(GBApplication.getDeviceSpecificSharedPrefs(deviceAddress));
+        return prefs.getBoolean(HuamiConst.PREF_EXPOSE_HR_THIRDPARTY, false);
     }
 
     protected static Date getTimePreference(String key, String defaultValue, String deviceAddress) {

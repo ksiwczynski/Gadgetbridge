@@ -1,4 +1,5 @@
-/*  Copyright (C) 2018-2019 jcrode, Johann C. Rode, Sergio Lopez
+/*  Copyright (C) 2018-2020 Carsten Pfeiffer, jcrode, Johann C. Rode,
+    Sergio Lopez
 
     This file is part of Gadgetbridge.
 
@@ -105,7 +106,7 @@ class AppMessageHandlerM7S extends AppMessageHandler {
             return HAIL;
         } else if (conditionCode >= 907 && conditionCode < 957) {
             return WIND;
-        } else if (conditionCode == 905 || (conditionCode >= 957 && conditionCode < 900)) {
+        } else if (conditionCode == 905) {
             return EXTREME_WIND;
         } else if (conditionCode == 900) {
             return TORNADO;

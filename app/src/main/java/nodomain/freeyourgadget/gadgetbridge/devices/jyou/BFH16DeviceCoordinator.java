@@ -1,4 +1,4 @@
-/*  Copyright (C) 2019 Sophanimus
+/*  Copyright (C) 2019-2020 Andreas Shimokawa, Sophanimus
 
     This file is part of Gadgetbridge.
 
@@ -70,6 +70,7 @@ public class BFH16DeviceCoordinator extends AbstractDeviceCoordinator
         return Collections.singletonList(filter);
     }
 
+    @NonNull
     @Override
     public DeviceType getSupportedType(GBDeviceCandidate candidate) {
 
@@ -85,7 +86,7 @@ public class BFH16DeviceCoordinator extends AbstractDeviceCoordinator
     }
 
     @Override
-    public int getBondingStyle(GBDevice deviceCandidate){
+    public int getBondingStyle(){
         return BONDING_STYLE_NONE;
     }
 

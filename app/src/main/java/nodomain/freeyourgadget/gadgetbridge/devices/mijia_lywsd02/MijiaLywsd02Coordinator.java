@@ -1,4 +1,5 @@
-/*  Copyright (C) 2019 Andreas Shimokawa
+/*  Copyright (C) 2016-2020 Andreas Shimokawa, Carsten Pfeiffer, Daniele
+    Gobbetti, José Rebelo
 
     This file is part of Gadgetbridge.
 
@@ -49,7 +50,7 @@ public class MijiaLywsd02Coordinator extends AbstractDeviceCoordinator {
     }
 
     @Override
-    public int getBondingStyle(GBDevice deviceCandidate) {
+    public int getBondingStyle() {
         return BONDING_STYLE_NONE;
     }
 

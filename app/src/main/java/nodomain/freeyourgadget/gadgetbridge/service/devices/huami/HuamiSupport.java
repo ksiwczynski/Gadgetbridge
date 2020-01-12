@@ -1,6 +1,6 @@
-/*  Copyright (C) 2015-2019 Andreas Shimokawa, Carsten Pfeiffer, Christian
+/*  Copyright (C) 2015-2020 Andreas Shimokawa, Carsten Pfeiffer, Christian
     Fischer, Daniele Gobbetti, JohnnySun, José Rebelo, Julien Pivotto, Kasha,
-    Michal Novotny, Sebastian Kranz, Sergey Trofimov, Steffen Liebergeld
+    Michal Novotny, Sebastian Kranz, Sergey Trofimov, Steffen Liebergeld, vanous
 
     This file is part of Gadgetbridge.
 
@@ -22,6 +22,8 @@ import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.text.format.DateFormat;
 import android.widget.Toast;
@@ -42,15 +44,18 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.SimpleTimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import cyanogenmod.weather.util.WeatherUtils;
 import nodomain.freeyourgadget.gadgetbridge.GBApplication;
 import nodomain.freeyourgadget.gadgetbridge.Logging;
 import nodomain.freeyourgadget.gadgetbridge.R;
 import nodomain.freeyourgadget.gadgetbridge.activities.SettingsActivity;
+import nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst;
 import nodomain.freeyourgadget.gadgetbridge.database.DBHandler;
 import nodomain.freeyourgadget.gadgetbridge.database.DBHelper;
 import nodomain.freeyourgadget.gadgetbridge.deviceevents.GBDeviceEventBatteryInfo;
@@ -66,6 +71,7 @@ import nodomain.freeyourgadget.gadgetbridge.devices.huami.HuamiConst;
 import nodomain.freeyourgadget.gadgetbridge.devices.huami.HuamiCoordinator;
 import nodomain.freeyourgadget.gadgetbridge.devices.huami.HuamiFWHelper;
 import nodomain.freeyourgadget.gadgetbridge.devices.huami.HuamiService;
+import nodomain.freeyourgadget.gadgetbridge.devices.huami.HuamiWeatherConditions;
 import nodomain.freeyourgadget.gadgetbridge.devices.huami.amazfitbip.AmazfitBipService;
 import nodomain.freeyourgadget.gadgetbridge.devices.huami.miband2.MiBand2FWHelper;
 import nodomain.freeyourgadget.gadgetbridge.devices.huami.miband3.MiBand3Coordinator;
@@ -95,6 +101,7 @@ import nodomain.freeyourgadget.gadgetbridge.model.MusicSpec;
 import nodomain.freeyourgadget.gadgetbridge.model.MusicStateSpec;
 import nodomain.freeyourgadget.gadgetbridge.model.NotificationSpec;
 import nodomain.freeyourgadget.gadgetbridge.model.NotificationType;
+import nodomain.freeyourgadget.gadgetbridge.model.Weather;
 import nodomain.freeyourgadget.gadgetbridge.model.WeatherSpec;
 import nodomain.freeyourgadget.gadgetbridge.service.btle.AbstractBTLEDeviceSupport;
 import nodomain.freeyourgadget.gadgetbridge.service.btle.BLETypeConversions;
@@ -107,6 +114,8 @@ import nodomain.freeyourgadget.gadgetbridge.service.btle.actions.ConditionalWrit
 import nodomain.freeyourgadget.gadgetbridge.service.btle.actions.SetDeviceStateAction;
 import nodomain.freeyourgadget.gadgetbridge.service.btle.profiles.IntentListener;
 import nodomain.freeyourgadget.gadgetbridge.service.btle.profiles.alertnotification.AlertCategory;
+import nodomain.freeyourgadget.gadgetbridge.service.btle.profiles.alertnotification.AlertNotificationProfile;
+import nodomain.freeyourgadget.gadgetbridge.service.btle.profiles.alertnotification.NewAlert;
 import nodomain.freeyourgadget.gadgetbridge.service.btle.profiles.deviceinfo.DeviceInfoProfile;
 import nodomain.freeyourgadget.gadgetbridge.service.devices.common.SimpleNotification;
 import nodomain.freeyourgadget.gadgetbridge.service.devices.huami.actions.StopNotificationAction;
@@ -121,28 +130,20 @@ import nodomain.freeyourgadget.gadgetbridge.service.serial.GBDeviceProtocol;
 import nodomain.freeyourgadget.gadgetbridge.util.AlarmUtils;
 import nodomain.freeyourgadget.gadgetbridge.util.DeviceHelper;
 import nodomain.freeyourgadget.gadgetbridge.util.GB;
+import nodomain.freeyourgadget.gadgetbridge.util.GBPrefs;
 import nodomain.freeyourgadget.gadgetbridge.util.NotificationUtils;
 import nodomain.freeyourgadget.gadgetbridge.util.Prefs;
+import nodomain.freeyourgadget.gadgetbridge.util.StringUtils;
 import nodomain.freeyourgadget.gadgetbridge.util.Version;
 
-import static nodomain.freeyourgadget.gadgetbridge.devices.miband.MiBandConst.DEFAULT_VALUE_FLASH_COLOUR;
-import static nodomain.freeyourgadget.gadgetbridge.devices.miband.MiBandConst.DEFAULT_VALUE_FLASH_COUNT;
-import static nodomain.freeyourgadget.gadgetbridge.devices.miband.MiBandConst.DEFAULT_VALUE_FLASH_DURATION;
-import static nodomain.freeyourgadget.gadgetbridge.devices.miband.MiBandConst.DEFAULT_VALUE_FLASH_ORIGINAL_COLOUR;
 import static nodomain.freeyourgadget.gadgetbridge.devices.miband.MiBandConst.DEFAULT_VALUE_VIBRATION_COUNT;
-import static nodomain.freeyourgadget.gadgetbridge.devices.miband.MiBandConst.DEFAULT_VALUE_VIBRATION_DURATION;
-import static nodomain.freeyourgadget.gadgetbridge.devices.miband.MiBandConst.DEFAULT_VALUE_VIBRATION_PAUSE;
 import static nodomain.freeyourgadget.gadgetbridge.devices.miband.MiBandConst.DEFAULT_VALUE_VIBRATION_PROFILE;
-import static nodomain.freeyourgadget.gadgetbridge.devices.miband.MiBandConst.FLASH_COLOUR;
-import static nodomain.freeyourgadget.gadgetbridge.devices.miband.MiBandConst.FLASH_COUNT;
-import static nodomain.freeyourgadget.gadgetbridge.devices.miband.MiBandConst.FLASH_DURATION;
-import static nodomain.freeyourgadget.gadgetbridge.devices.miband.MiBandConst.FLASH_ORIGINAL_COLOUR;
 import static nodomain.freeyourgadget.gadgetbridge.devices.miband.MiBandConst.VIBRATION_COUNT;
-import static nodomain.freeyourgadget.gadgetbridge.devices.miband.MiBandConst.VIBRATION_DURATION;
-import static nodomain.freeyourgadget.gadgetbridge.devices.miband.MiBandConst.VIBRATION_PAUSE;
 import static nodomain.freeyourgadget.gadgetbridge.devices.miband.MiBandConst.VIBRATION_PROFILE;
 import static nodomain.freeyourgadget.gadgetbridge.devices.miband.MiBandConst.getNotificationPrefIntValue;
 import static nodomain.freeyourgadget.gadgetbridge.devices.miband.MiBandConst.getNotificationPrefStringValue;
+import static nodomain.freeyourgadget.gadgetbridge.service.btle.GattCharacteristic.UUID_CHARACTERISTIC_ALERT_LEVEL;
+
 
 public class HuamiSupport extends AbstractBTLEDeviceSupport {
 
@@ -151,6 +152,7 @@ public class HuamiSupport extends AbstractBTLEDeviceSupport {
     private static int currentButtonPressCount = 0;
     private static long currentButtonPressTime = 0;
     private static long currentButtonTimerActivationTime = 0;
+    private Timer buttonActionTimer = null;
 
     private static final Logger LOG = LoggerFactory.getLogger(HuamiSupport.class);
     private final DeviceInfoProfile<HuamiSupport> deviceInfoProfile;
@@ -165,7 +167,7 @@ public class HuamiSupport extends AbstractBTLEDeviceSupport {
     };
 
     private BluetoothGattCharacteristic characteristicHRControlPoint;
-    protected BluetoothGattCharacteristic characteristicChunked;
+    private BluetoothGattCharacteristic characteristicChunked;
 
     private boolean needsAuth;
     private volatile boolean telephoneRinging;
@@ -182,6 +184,7 @@ public class HuamiSupport extends AbstractBTLEDeviceSupport {
     private MusicSpec bufferMusicSpec = null;
     private MusicStateSpec bufferMusicStateSpec = null;
     private boolean heartRateNotifyEnabled;
+    private int mMTU = 23;
 
     public HuamiSupport() {
         this(LOG);
@@ -294,15 +297,16 @@ public class HuamiSupport extends AbstractBTLEDeviceSupport {
         builder.notify(getCharacteristic(GattService.UUID_SERVICE_CURRENT_TIME), enable);
         // Notify CHARACTERISTIC9 to receive random auth code
         builder.notify(getCharacteristic(HuamiService.UUID_CHARACTERISTIC_AUTH), enable);
+
         return this;
     }
 
     public HuamiSupport enableFurtherNotifications(TransactionBuilder builder, boolean enable) {
         builder.notify(getCharacteristic(HuamiService.UUID_CHARACTERISTIC_3_CONFIGURATION), enable);
         builder.notify(getCharacteristic(HuamiService.UUID_CHARACTERISTIC_6_BATTERY_INFO), enable);
-        builder.notify(getCharacteristic(HuamiService.UUID_CHARACTERISTIC_DEVICEEVENT), enable);
         builder.notify(getCharacteristic(HuamiService.UUID_CHARACTERISTIC_AUDIO), enable);
         builder.notify(getCharacteristic(HuamiService.UUID_CHARACTERISTIC_AUDIODATA), enable);
+        builder.notify(getCharacteristic(HuamiService.UUID_CHARACTERISTIC_DEVICEEVENT), enable);
 
         return this;
     }
@@ -324,23 +328,6 @@ public class HuamiSupport extends AbstractBTLEDeviceSupport {
         for (short i = 0; i < repeat; i++) {
             strategy.sendDefaultNotification(builder, simpleNotification, extraAction);
         }
-        return this;
-    }
-
-    /**
-     * Adds a custom notification to the given transaction builder
-     * @param vibrationProfile specifies how and how often the Band shall vibrate.
-     * @param simpleNotification
-     * @param flashTimes
-     * @param flashColour
-     * @param originalColour
-     * @param flashDuration
-     * @param extraAction      an extra action to be executed after every vibration and flash sequence. Allows to abort the repetition, for example.
-     * @param builder
-     */
-    private HuamiSupport sendCustomNotification(VibrationProfile vibrationProfile, SimpleNotification simpleNotification, int flashTimes, int flashColour, int originalColour, long flashDuration, BtLEAction extraAction, TransactionBuilder builder) {
-        getNotificationStrategy().sendCustomNotification(vibrationProfile, simpleNotification, flashTimes, flashColour, originalColour, flashDuration, extraAction, builder);
-        LOG.info("Sending notification to MiBand");
         return this;
     }
 
@@ -439,7 +426,7 @@ public class HuamiSupport extends AbstractBTLEDeviceSupport {
         int userid = alias.hashCode(); // hash from alias like mi1
 
         // FIXME: Do encoding like in PebbleProtocol, this is ugly
-        byte bytes[] = new byte[]{
+        byte[] bytes = new byte[]{
                 HuamiService.COMMAND_SET_USERINFO,
                 0,
                 0,
@@ -563,56 +550,24 @@ public class HuamiSupport extends AbstractBTLEDeviceSupport {
         }
     }
 
-    protected void performPreferredNotification(String task, String notificationOrigin, SimpleNotification simpleNotification, int alertLevel, BtLEAction extraAction) {
+    private void performPreferredNotification(String task, String notificationOrigin, SimpleNotification simpleNotification, int alertLevel, BtLEAction extraAction) {
         try {
             TransactionBuilder builder = performInitialized(task);
             Prefs prefs = GBApplication.getPrefs();
-            int vibrateDuration = getPreferredVibrateDuration(notificationOrigin, prefs);
-            int vibratePause = getPreferredVibratePause(notificationOrigin, prefs);
             short vibrateTimes = getPreferredVibrateCount(notificationOrigin, prefs);
             VibrationProfile profile = getPreferredVibrateProfile(notificationOrigin, prefs, vibrateTimes);
             profile.setAlertLevel(alertLevel);
 
-            int flashTimes = getPreferredFlashCount(notificationOrigin, prefs);
-            int flashColour = getPreferredFlashColour(notificationOrigin, prefs);
-            int originalColour = getPreferredOriginalColour(notificationOrigin, prefs);
-            int flashDuration = getPreferredFlashDuration(notificationOrigin, prefs);
+            getNotificationStrategy().sendCustomNotification(profile, simpleNotification, 0, 0, 0, 0, extraAction, builder);
 
-            sendCustomNotification(profile, simpleNotification, flashTimes, flashColour, originalColour, flashDuration, extraAction, builder);
-
-//            sendCustomNotification(vibrateDuration, vibrateTimes, vibratePause, flashTimes, flashColour, originalColour, flashDuration, builder);
             builder.queue(getQueue());
         } catch (IOException ex) {
-            LOG.error("Unable to send notification to MI device", ex);
+            LOG.error("Unable to send notification to device", ex);
         }
-    }
-
-    private int getPreferredFlashDuration(String notificationOrigin, Prefs prefs) {
-        return getNotificationPrefIntValue(FLASH_DURATION, notificationOrigin, prefs, DEFAULT_VALUE_FLASH_DURATION);
-    }
-
-    private int getPreferredOriginalColour(String notificationOrigin, Prefs prefs) {
-        return getNotificationPrefIntValue(FLASH_ORIGINAL_COLOUR, notificationOrigin, prefs, DEFAULT_VALUE_FLASH_ORIGINAL_COLOUR);
-    }
-
-    private int getPreferredFlashColour(String notificationOrigin, Prefs prefs) {
-        return getNotificationPrefIntValue(FLASH_COLOUR, notificationOrigin, prefs, DEFAULT_VALUE_FLASH_COLOUR);
-    }
-
-    private int getPreferredFlashCount(String notificationOrigin, Prefs prefs) {
-        return getNotificationPrefIntValue(FLASH_COUNT, notificationOrigin, prefs, DEFAULT_VALUE_FLASH_COUNT);
-    }
-
-    private int getPreferredVibratePause(String notificationOrigin, Prefs prefs) {
-        return getNotificationPrefIntValue(VIBRATION_PAUSE, notificationOrigin, prefs, DEFAULT_VALUE_VIBRATION_PAUSE);
     }
 
     private short getPreferredVibrateCount(String notificationOrigin, Prefs prefs) {
         return (short) Math.min(Short.MAX_VALUE, getNotificationPrefIntValue(VIBRATION_COUNT, notificationOrigin, prefs, DEFAULT_VALUE_VIBRATION_COUNT));
-    }
-
-    private int getPreferredVibrateDuration(String notificationOrigin, Prefs prefs) {
-        return getNotificationPrefIntValue(VIBRATION_DURATION, notificationOrigin, prefs, DEFAULT_VALUE_VIBRATION_DURATION);
     }
 
     private VibrationProfile getPreferredVibrateProfile(String notificationOrigin, Prefs prefs, short repeat) {
@@ -641,6 +596,104 @@ public class HuamiSupport extends AbstractBTLEDeviceSupport {
         }
     }
 
+
+    /*
+     This works on all Huami devices except Mi Band 2
+     */
+    protected void sendNotificationNew(NotificationSpec notificationSpec, boolean hasExtraHeader) {
+        if (notificationSpec.type == NotificationType.GENERIC_ALARM_CLOCK) {
+            onAlarmClock(notificationSpec);
+            return;
+        }
+
+        String senderOrTitle = StringUtils.getFirstOf(notificationSpec.sender, notificationSpec.title);
+
+        String message = StringUtils.truncate(senderOrTitle, 32) + "\0";
+        if (notificationSpec.subject != null) {
+            message += StringUtils.truncate(notificationSpec.subject, 128) + "\n\n";
+        }
+        if (notificationSpec.body != null) {
+            message += StringUtils.truncate(notificationSpec.body, 128);
+        }
+
+        try {
+            TransactionBuilder builder = performInitialized("new notification");
+
+            byte customIconId = HuamiIcon.mapToIconId(notificationSpec.type);
+            AlertCategory alertCategory = AlertCategory.CustomHuami;
+
+            // The SMS icon for AlertCategory.SMS is unique and not available as iconId
+            if (notificationSpec.type == NotificationType.GENERIC_SMS) {
+                alertCategory = AlertCategory.SMS;
+            }
+            // EMAIL icon does not work in FW 0.0.8.74, it did in 0.0.7.90
+            else if (customIconId == HuamiIcon.EMAIL) {
+                alertCategory = AlertCategory.Email;
+            }
+
+            int maxLength = 230;
+            if (characteristicChunked != null) {
+                int prefixlength = 2;
+
+                // We also need a (fake) source name for Mi Band 3 for SMS/EMAIL, else the message is not displayed
+                byte[] appSuffix = "\0 \0".getBytes();
+                int suffixlength = appSuffix.length;
+
+                if (alertCategory == AlertCategory.CustomHuami) {
+                    String appName;
+                    prefixlength = 3;
+                    final PackageManager pm = getContext().getPackageManager();
+                    ApplicationInfo ai = null;
+                    try {
+                        ai = pm.getApplicationInfo(notificationSpec.sourceAppId, 0);
+                    } catch (PackageManager.NameNotFoundException ignored) {
+                    }
+
+                    if (ai != null) {
+                        appName = "\0" + pm.getApplicationLabel(ai) + "\0";
+                    } else {
+                        appName = "\0" + "UNKNOWN" + "\0";
+                    }
+                    appSuffix = appName.getBytes();
+                    suffixlength = appSuffix.length;
+                }
+                if (hasExtraHeader) {
+                    prefixlength += 4;
+                }
+
+                byte[] rawmessage = message.getBytes();
+                int length = Math.min(rawmessage.length, maxLength - prefixlength);
+
+                byte[] command = new byte[length + prefixlength + suffixlength];
+                int pos = 0;
+                command[pos++] = (byte) alertCategory.getId();
+                if (hasExtraHeader) {
+                    command[pos++] = 0; // TODO
+                    command[pos++] = 0;
+                    command[pos++] = 0;
+                    command[pos++] = 0;
+                }
+                command[pos++] = 1;
+                if (alertCategory == AlertCategory.CustomHuami) {
+                    command[pos] = customIconId;
+                }
+
+                System.arraycopy(rawmessage, 0, command, prefixlength, length);
+                System.arraycopy(appSuffix, 0, command, prefixlength + length, appSuffix.length);
+
+                writeToChunked(builder, 0, command);
+            } else {
+                AlertNotificationProfile<?> profile = new AlertNotificationProfile(this);
+                NewAlert alert = new NewAlert(alertCategory, 1, message, customIconId);
+                profile.setMaxLength(maxLength);
+                profile.newAlert(builder, alert);
+            }
+            builder.queue(getQueue());
+        } catch (IOException ex) {
+            LOG.error("Unable to send notification to device", ex);
+        }
+    }
+
     @Override
     public void onNotification(NotificationSpec notificationSpec) {
         if (notificationSpec.type == NotificationType.GENERIC_ALARM_CLOCK) {
@@ -659,7 +712,7 @@ public class HuamiSupport extends AbstractBTLEDeviceSupport {
 
     protected void onAlarmClock(NotificationSpec notificationSpec) {
         alarmClockRinging = true;
-        AbortTransactionAction abortAction = new StopNotificationAction(getCharacteristic(GattCharacteristic.UUID_CHARACTERISTIC_ALERT_LEVEL)) {
+        AbortTransactionAction abortAction = new StopNotificationAction(getCharacteristic(UUID_CHARACTERISTIC_ALERT_LEVEL)) {
             @Override
             protected boolean shouldAbort() {
                 return !isAlarmClockRinging();
@@ -692,7 +745,7 @@ public class HuamiSupport extends AbstractBTLEDeviceSupport {
     public void onSetCallState(CallSpec callSpec) {
         if (callSpec.command == CallSpec.CALL_INCOMING) {
             telephoneRinging = true;
-            AbortTransactionAction abortAction = new StopNotificationAction(getCharacteristic(GattCharacteristic.UUID_CHARACTERISTIC_ALERT_LEVEL)) {
+            AbortTransactionAction abortAction = new StopNotificationAction(getCharacteristic(UUID_CHARACTERISTIC_ALERT_LEVEL)) {
                 @Override
                 protected boolean shouldAbort() {
                     return !isTelephoneRinging();
@@ -703,17 +756,17 @@ public class HuamiSupport extends AbstractBTLEDeviceSupport {
             performPreferredNotification("incoming call", MiBandConst.ORIGIN_INCOMING_CALL, simpleNotification, HuamiService.ALERT_LEVEL_PHONE_CALL, abortAction);
         } else if ((callSpec.command == CallSpec.CALL_START) || (callSpec.command == CallSpec.CALL_END)) {
             telephoneRinging = false;
-            stopCurrentNotification();
+            stopCurrentCallNotification();
         }
     }
 
-    private void stopCurrentNotification() {
+    private void stopCurrentCallNotification() {
         try {
             TransactionBuilder builder = performInitialized("stop notification");
             getNotificationStrategy().stopCurrentNotification(builder);
             builder.queue(getQueue());
         } catch (IOException e) {
-            LOG.error("Error stopping notification");
+            LOG.error("Error stopping call notification");
         }
     }
 
@@ -762,9 +815,8 @@ public class HuamiSupport extends AbstractBTLEDeviceSupport {
     }
 
 
+
     private void sendMusicStateToDevice() {
-
-
         if (characteristicChunked == null) {
             return;
         }
@@ -971,7 +1023,7 @@ public class HuamiSupport extends AbstractBTLEDeviceSupport {
     }
 
     private byte[] getLatency(int minConnectionInterval, int maxConnectionInterval, int latency, int timeout, int advertisementInterval) {
-        byte result[] = new byte[12];
+        byte[] result = new byte[12];
         result[0] = (byte) (minConnectionInterval & 0xff);
         result[1] = (byte) (0xff & minConnectionInterval >> 8);
         result[2] = (byte) (maxConnectionInterval & 0xff);
@@ -1037,14 +1089,43 @@ public class HuamiSupport extends AbstractBTLEDeviceSupport {
         // not supported
     }
 
-    public void runButtonAction() {
-        Prefs prefs = GBApplication.getPrefs();
+    // this could go though onion code with preferrednotification, but I this should work on all huami devices
+    private void vibrateOnce() {
+        BluetoothGattCharacteristic characteristic = getCharacteristic(UUID_CHARACTERISTIC_ALERT_LEVEL);
+        try {
+            TransactionBuilder builder = performInitialized("Vibrate once");
+            builder.write(characteristic,new byte[] {3});
+            builder.queue(getQueue());
+        } catch (IOException e) {
+            LOG.error("error while sending simple vibrate command", e);
+        }
+    }
+
+    private void runButtonAction() {
+        Prefs prefs = new Prefs(GBApplication.getDeviceSpecificSharedPrefs(gbDevice.getAddress()));
 
         if (currentButtonTimerActivationTime != currentButtonPressTime) {
             return;
         }
+        //handle user events settings. 0 is long press, rest are button_id 1-3
+        switch (currentButtonActionId) {
+            case 0:
+                handleMediaButton(prefs.getString("button_long_press_action_selection","UNKNOWN"));
+                break;
+            case 1:
+                handleMediaButton(prefs.getString("button_single_press_action_selection", "UNKNOWN"));
+                break;
+            case 2:
+                handleMediaButton(prefs.getString("button_double_press_action_selection", "UNKNOWN"));
+                break;
+            case 3:
+                handleMediaButton(prefs.getString("button_triple_press_action_selection", "UNKNOWN"));
+                break;
+            default:
+                break;
+        }
 
-        String requiredButtonPressMessage = prefs.getString(MiBandConst.PREF_MIBAND_BUTTON_PRESS_BROADCAST,
+        String requiredButtonPressMessage = prefs.getString(HuamiConst.PREF_BUTTON_ACTION_BROADCAST,
                 this.getContext().getString(R.string.mi2_prefs_button_press_broadcast_default_value));
 
         Intent in = new Intent();
@@ -1052,14 +1133,23 @@ public class HuamiSupport extends AbstractBTLEDeviceSupport {
         in.putExtra("button_id", currentButtonActionId);
         LOG.info("Sending " + requiredButtonPressMessage + " with button_id " + currentButtonActionId);
         this.getContext().getApplicationContext().sendBroadcast(in);
-        if (prefs.getBoolean(MiBandConst.PREF_MIBAND_BUTTON_ACTION_VIBRATE, false)) {
-            performPreferredNotification(null, null, null, HuamiService.ALERT_LEVEL_VIBRATE_ONLY, null);
+
+        if (prefs.getBoolean(HuamiConst.PREF_BUTTON_ACTION_VIBRATE, false)) {
+            vibrateOnce();
         }
 
         currentButtonActionId = 0;
-
         currentButtonPressCount = 0;
         currentButtonPressTime = System.currentTimeMillis();
+    }
+
+    private void handleMediaButton(String MediaAction) {
+        if (MediaAction.equals("UNKNOWN")) {
+            return;
+        }
+        GBDeviceEventMusicControl deviceEventMusicControl = new GBDeviceEventMusicControl();
+        deviceEventMusicControl.event = GBDeviceEventMusicControl.Event.valueOf(MediaAction);
+        evaluateGBDeviceEvent(deviceEventMusicControl);
     }
 
     private void handleDeviceEvent(byte[] value) {
@@ -1085,12 +1175,16 @@ public class HuamiSupport extends AbstractBTLEDeviceSupport {
                 break;
             case HuamiDeviceEvent.BUTTON_PRESSED_LONG:
                 LOG.info("button long-pressed ");
+                handleLongButtonEvent();
                 break;
             case HuamiDeviceEvent.START_NONWEAR:
                 LOG.info("non-wear start detected");
                 break;
             case HuamiDeviceEvent.ALARM_TOGGLED:
                 LOG.info("An alarm was toggled");
+                TransactionBuilder builder = new TransactionBuilder("requestAlarms");
+                requestAlarms(builder);
+                builder.queue(getQueue());
                 break;
             case HuamiDeviceEvent.FELL_ASLEEP:
                 LOG.info("Fell asleep");
@@ -1153,8 +1247,31 @@ public class HuamiSupport extends AbstractBTLEDeviceSupport {
                 }
                 evaluateGBDeviceEvent(deviceEventMusicControl);
                 break;
+            case HuamiDeviceEvent.MTU_REQUEST:
+                int mtu = (value[2] & 0xff) << 8 | value[1] & 0xff;
+                LOG.info("device announced MTU of " + mtu);
+                mMTU = mtu;
+                /*
+                 * not really sure if this would make sense, is this event already a proof of a successful MTU
+                 * negotiation initiated by the Huami device, and acknowledged by the phone? do we really have to
+                 * requestMTU() from our side after receiving this?
+                 * /
+                if (mMTU != mtu) {
+                    requestMTU(mtu);
+                }
+                */
+                break;
             default:
                 LOG.warn("unhandled event " + value[0]);
+        }
+    }
+
+    private void requestMTU(int mtu) {
+        if (GBApplication.isRunningLollipopOrLater()) {
+            new TransactionBuilder("requestMtu")
+                    .requestMtu(mtu)
+                    .queue(getQueue());
+            mMTU = mtu;
         }
     }
 
@@ -1169,18 +1286,30 @@ public class HuamiSupport extends AbstractBTLEDeviceSupport {
         }
     }
 
-    public void handleButtonEvent() {
-        ///logMessageContent(value);
+    private void handleLongButtonEvent(){
+        Prefs prefs = new Prefs(GBApplication.getDeviceSpecificSharedPrefs(gbDevice.getAddress()));
 
-        // If disabled we return from function immediately
-        Prefs prefs = GBApplication.getPrefs();
-        if (!prefs.getBoolean(MiBandConst.PREF_MIBAND_BUTTON_ACTION_ENABLE, false)) {
+        if (!prefs.getBoolean(HuamiConst.PREF_BUTTON_ACTION_ENABLE, false)) {
             return;
         }
 
-        int buttonPressMaxDelay = prefs.getInt(MiBandConst.PREF_MIBAND_BUTTON_PRESS_MAX_DELAY, 2000);
-        int buttonActionDelay = prefs.getInt(MiBandConst.PREF_MIBAND_BUTTON_ACTION_DELAY, 0);
-        int requiredButtonPressCount = prefs.getInt(MiBandConst.PREF_MIBAND_BUTTON_PRESS_COUNT, 0);
+        currentButtonActionId = 0;
+        currentButtonPressTime = System.currentTimeMillis();
+        currentButtonTimerActivationTime = currentButtonPressTime;
+        runButtonAction();
+
+    }
+
+    private void handleButtonEvent() {
+
+        // If disabled we return from function immediately
+        Prefs prefs = new Prefs(GBApplication.getDeviceSpecificSharedPrefs(gbDevice.getAddress()));
+        if (!prefs.getBoolean(HuamiConst.PREF_BUTTON_ACTION_ENABLE, false)) {
+            return;
+        }
+
+        int buttonPressMaxDelay = prefs.getInt(HuamiConst.PREF_BUTTON_ACTION_PRESS_MAX_INTERVAL, 2000);
+        int requiredButtonPressCount = prefs.getInt(HuamiConst.PREF_BUTTON_ACTION_PRESS_COUNT, 0);
 
         if (requiredButtonPressCount > 0) {
             long timeSinceLastPress = System.currentTimeMillis() - currentButtonPressTime;
@@ -1192,30 +1321,31 @@ public class HuamiSupport extends AbstractBTLEDeviceSupport {
                 currentButtonPressCount = 1;
                 currentButtonActionId = 0;
             }
+            if (buttonActionTimer != null){
+                buttonActionTimer.cancel();
+            }
 
             currentButtonPressTime = System.currentTimeMillis();
             if (currentButtonPressCount == requiredButtonPressCount) {
                 currentButtonTimerActivationTime = currentButtonPressTime;
-                if (buttonActionDelay > 0) {
-                    LOG.info("Activating timer");
-                    final Timer buttonActionTimer = new Timer("Mi Band Button Action Timer");
-                    buttonActionTimer.scheduleAtFixedRate(new TimerTask() {
-                        @Override
-                        public void run() {
-                            runButtonAction();
-                            buttonActionTimer.cancel();
-                        }
-                    }, buttonActionDelay, buttonActionDelay);
-                }
-                else {
-                    LOG.info("Activating button action");
-                    runButtonAction();
-                }
+                LOG.info("Activating button timer");
+                buttonActionTimer = new Timer("Huami Button Action Timer");
+                buttonActionTimer.scheduleAtFixedRate(new TimerTask() {
+                    @Override
+                    public void run() {
+                        runButtonAction();
+                        buttonActionTimer.cancel();
+                    }
+                }, buttonPressMaxDelay, buttonPressMaxDelay);
+
                 currentButtonActionId++;
                 currentButtonPressCount = 0;
             }
         }
     }
+
+
+
 
     @Override
     public boolean onCharacteristicChanged(BluetoothGatt gatt,
@@ -1241,6 +1371,9 @@ public class HuamiSupport extends AbstractBTLEDeviceSupport {
             return true;
         } else if (HuamiService.UUID_CHARACTERISTIC_7_REALTIME_STEPS.equals(characteristicUUID)) {
             handleRealtimeSteps(characteristic.getValue());
+            return true;
+        } else if (HuamiService.UUID_CHARACTERISTIC_3_CONFIGURATION.equals(characteristicUUID)) {
+            handleConfigurationInfo(characteristic.getValue());
             return true;
         } else {
             LOG.info("Unhandled characteristic changed: " + characteristicUUID);
@@ -1333,6 +1466,53 @@ public class HuamiSupport extends AbstractBTLEDeviceSupport {
             getRealtimeSamplesSupport().setSteps(steps);
         } else {
             LOG.warn("Unrecognized realtime steps value: " + Logging.formatBytes(value));
+        }
+    }
+
+    private void handleConfigurationInfo(byte[] value) {
+        if (value == null || value.length < 4) {
+            return;
+        }
+        if (value[0] == 0x10 && value[2] == 0x01) {
+            if (value[1] == 0x0e) {
+                String gpsVersion = new String(value, 3, value.length - 3);
+                LOG.info("got gps version = " + gpsVersion);
+                gbDevice.setFirmwareVersion2(gpsVersion);
+            } else if (value[1] == 0x0d) {
+                LOG.info("got alarms from watch");
+                decodeAndUpdateAlarmStatus(value);
+            } else {
+                LOG.warn("got configuration info we do not handle yet " + GB.hexdump(value, 3, -1));
+            }
+        } else {
+            LOG.warn("error received from configuration request " + GB.hexdump(value, 0, -1));
+        }
+    }
+
+    private void decodeAndUpdateAlarmStatus(byte[] response) {
+        List<nodomain.freeyourgadget.gadgetbridge.entities.Alarm> alarms = DBHelper.getAlarms(gbDevice);
+        boolean[] alarmsInUse = new boolean[10];
+        boolean[] alarmsEnabled = new boolean[10];
+        int nr_alarms = response[8];
+        for (int i = 0; i < nr_alarms; i++) {
+            byte alarm_data = response[9 + i];
+            int index = alarm_data & 0xf;
+            alarmsInUse[index] = true;
+            boolean enabled = (alarm_data & 0x10) == 0x10;
+            alarmsEnabled[index] = enabled;
+            LOG.info("alarm " + index + " is enabled:" + enabled);
+        }
+        for (nodomain.freeyourgadget.gadgetbridge.entities.Alarm alarm : alarms) {
+            boolean enabled = alarmsEnabled[alarm.getPosition()];
+            boolean unused = !alarmsInUse[alarm.getPosition()];
+            if (alarm.getEnabled() != enabled || alarm.getUnused() != unused) {
+                LOG.info("updating alarm index " + alarm.getPosition() + " unused=" + unused + ", enabled=" + enabled);
+                alarm.setEnabled(enabled);
+                alarm.setUnused(unused);
+                DBHelper.store(alarm);
+                Intent intent = new Intent(DeviceService.ACTION_SAVE_ALARMS);
+                LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
+            }
         }
     }
 
@@ -1429,13 +1609,17 @@ public class HuamiSupport extends AbstractBTLEDeviceSupport {
         }
 
         int base = 0;
-        if (alarm.getEnabled()) {
+        int daysMask = 0;
+        if (alarm.getEnabled() && !alarm.getUnused()) {
             base = 128;
         }
-        int daysMask = alarm.getRepetition();
-        if (!alarm.isRepetitive()) {
-            daysMask = 128;
+        if (!alarm.getUnused()) {
+            daysMask = alarm.getRepetition();
+            if (!alarm.isRepetitive()) {
+                daysMask = 128;
+            }
         }
+
         byte[] alarmMessage = new byte[] {
                 (byte) 0x2, // TODO what is this?
                 (byte) (base + alarm.getPosition()), // 128 is the base, alarm slot is added
@@ -1484,8 +1668,8 @@ public class HuamiSupport extends AbstractBTLEDeviceSupport {
     private HuamiSupport sendCalendarEvents(TransactionBuilder builder) {
         BluetoothGattCharacteristic characteristic = getCharacteristic(HuamiService.UUID_CHARACTERISTIC_3_CONFIGURATION);
 
-        Prefs prefs = GBApplication.getPrefs();
-        int availableSlots = prefs.getInt(MiBandConst.PREF_MIBAND_RESERVE_ALARM_FOR_CALENDAR, 0);
+        Prefs prefs = new Prefs(GBApplication.getDeviceSpecificSharedPrefs(gbDevice.getAddress()));
+        int availableSlots = prefs.getInt(DeviceSettingsPreferenceConst.PREF_RESERVER_ALARMS_CALENDAR, 0);
 
         if (availableSlots > 0) {
             CalendarEvents upcomingEvents = new CalendarEvents();
@@ -1559,11 +1743,20 @@ public class HuamiSupport extends AbstractBTLEDeviceSupport {
                 case MiBandConst.PREF_SWIPE_UNLOCK:
                     setBandScreenUnlock(builder);
                     break;
-                case HuamiConst.PREF_DATEFORMAT:
+                case DeviceSettingsPreferenceConst.PREF_TIMEFORMAT:
+                    setTimeFormat(builder);
+                    break;
+                case DeviceSettingsPreferenceConst.PREF_DATEFORMAT:
                     setDateFormat(builder);
                     break;
                 case HuamiConst.PREF_LANGUAGE:
                     setLanguage(builder);
+                    break;
+                case HuamiConst.PREF_EXPOSE_HR_THIRDPARTY:
+                    setExposeHRThridParty(builder);
+                    break;
+                case DeviceSettingsPreferenceConst.PREF_WEARLOCATION:
+                    setWearLocation(builder);
                     break;
             }
             builder.queue(getQueue());
@@ -1584,7 +1777,190 @@ public class HuamiSupport extends AbstractBTLEDeviceSupport {
 
     @Override
     public void onSendWeather(WeatherSpec weatherSpec) {
+        // FIXME: currently HuamiSupport *is* MiBand2 support, so return if we are using Mi Band 2
+        if (gbDevice.getType() == DeviceType.MIBAND2) {
+            return;
+        }
 
+        if (gbDevice.getFirmwareVersion() == null) {
+            LOG.warn("Device not initialized yet, so not sending weather info");
+            return;
+        }
+        boolean supportsConditionString = true;
+
+        Version version = new Version(gbDevice.getFirmwareVersion());
+        if (gbDevice.getType() == DeviceType.AMAZFITBIP && version.compareTo(new Version("0.0.8.74")) < 0) {
+            supportsConditionString = false;
+        }
+
+        MiBandConst.DistanceUnit unit = HuamiCoordinator.getDistanceUnit();
+        int tz_offset_hours = SimpleTimeZone.getDefault().getOffset(weatherSpec.timestamp * 1000L) / (1000 * 60 * 60);
+        try {
+            TransactionBuilder builder;
+            builder = performInitialized("Sending current temp");
+
+            byte condition = HuamiWeatherConditions.mapToAmazfitBipWeatherCode(weatherSpec.currentConditionCode);
+
+            int length = 8;
+            if (supportsConditionString) {
+                length += weatherSpec.currentCondition.getBytes().length + 1;
+            }
+            ByteBuffer buf = ByteBuffer.allocate(length);
+            buf.order(ByteOrder.LITTLE_ENDIAN);
+
+            buf.put((byte) 2);
+            buf.putInt(weatherSpec.timestamp);
+            buf.put((byte) (tz_offset_hours * 4));
+            buf.put(condition);
+
+            int currentTemp = weatherSpec.currentTemp - 273;
+            if (unit == MiBandConst.DistanceUnit.IMPERIAL) {
+                currentTemp = (int) WeatherUtils.celsiusToFahrenheit(currentTemp);
+            }
+            buf.put((byte) currentTemp);
+
+            if (supportsConditionString) {
+                buf.put(weatherSpec.currentCondition.getBytes());
+                buf.put((byte) 0);
+            }
+
+            if (characteristicChunked != null) {
+                writeToChunked(builder, 1, buf.array());
+            } else {
+                builder.write(getCharacteristic(AmazfitBipService.UUID_CHARACTERISTIC_WEATHER), buf.array());
+            }
+
+            builder.queue(getQueue());
+        } catch (Exception ex) {
+            LOG.error("Error sending current weather", ex);
+        }
+
+        try {
+            TransactionBuilder builder;
+            builder = performInitialized("Sending air quality index");
+            int length = 8;
+            String aqiString = "(n/a)";
+            if (supportsConditionString) {
+                length += aqiString.getBytes().length + 1;
+            }
+            ByteBuffer buf = ByteBuffer.allocate(length);
+            buf.order(ByteOrder.LITTLE_ENDIAN);
+            buf.put((byte) 4);
+            buf.putInt(weatherSpec.timestamp);
+            buf.put((byte) (tz_offset_hours * 4));
+            buf.putShort((short) 0);
+            if (supportsConditionString) {
+                buf.put(aqiString.getBytes());
+                buf.put((byte) 0);
+            }
+
+            if (characteristicChunked != null) {
+                writeToChunked(builder, 1, buf.array());
+            } else {
+                builder.write(getCharacteristic(AmazfitBipService.UUID_CHARACTERISTIC_WEATHER), buf.array());
+            }
+
+            builder.queue(getQueue());
+        } catch (IOException ex) {
+            LOG.error("Error sending air quality");
+        }
+
+        try {
+            TransactionBuilder builder = performInitialized("Sending weather forecast");
+
+            final byte NR_DAYS = (byte) (1 + weatherSpec.forecasts.size());
+            int bytesPerDay = 4;
+
+            int conditionsLength = 0;
+            if (supportsConditionString) {
+                bytesPerDay = 5;
+                conditionsLength = weatherSpec.currentCondition.getBytes().length;
+                for (WeatherSpec.Forecast forecast : weatherSpec.forecasts) {
+                    conditionsLength += Weather.getConditionString(forecast.conditionCode).getBytes().length;
+                }
+            }
+
+            int length = 7 + bytesPerDay * NR_DAYS + conditionsLength;
+            ByteBuffer buf = ByteBuffer.allocate(length);
+
+            buf.order(ByteOrder.LITTLE_ENDIAN);
+            buf.put((byte) 1);
+            buf.putInt(weatherSpec.timestamp);
+            buf.put((byte) (tz_offset_hours * 4));
+
+            buf.put(NR_DAYS);
+
+            byte condition = HuamiWeatherConditions.mapToAmazfitBipWeatherCode(weatherSpec.currentConditionCode);
+            buf.put(condition);
+            buf.put(condition);
+
+            int todayMaxTemp = weatherSpec.todayMaxTemp - 273;
+            int todayMinTemp = weatherSpec.todayMinTemp - 273;
+            if (unit == MiBandConst.DistanceUnit.IMPERIAL) {
+                todayMaxTemp = (int) WeatherUtils.celsiusToFahrenheit(todayMaxTemp);
+                todayMinTemp = (int) WeatherUtils.celsiusToFahrenheit(todayMinTemp);
+            }
+            buf.put((byte) todayMaxTemp);
+            buf.put((byte) todayMinTemp);
+
+            if (supportsConditionString) {
+                buf.put(weatherSpec.currentCondition.getBytes());
+                buf.put((byte) 0);
+            }
+
+            for (WeatherSpec.Forecast forecast : weatherSpec.forecasts) {
+                condition = HuamiWeatherConditions.mapToAmazfitBipWeatherCode(forecast.conditionCode);
+                buf.put(condition);
+                buf.put(condition);
+
+                int forecastMaxTemp = forecast.maxTemp - 273;
+                int forecastMinTemp = forecast.minTemp - 273;
+                if (unit == MiBandConst.DistanceUnit.IMPERIAL) {
+                    forecastMaxTemp = (int) WeatherUtils.celsiusToFahrenheit(forecastMaxTemp);
+                    forecastMinTemp = (int) WeatherUtils.celsiusToFahrenheit(forecastMinTemp);
+                }
+                buf.put((byte) forecastMaxTemp);
+                buf.put((byte) forecastMinTemp);
+
+                if (supportsConditionString) {
+                    buf.put(Weather.getConditionString(forecast.conditionCode).getBytes());
+                    buf.put((byte) 0);
+                }
+            }
+
+            if (characteristicChunked != null) {
+                writeToChunked(builder, 1, buf.array());
+            } else {
+                builder.write(getCharacteristic(AmazfitBipService.UUID_CHARACTERISTIC_WEATHER), buf.array());
+            }
+
+            builder.queue(getQueue());
+        } catch (Exception ex) {
+            LOG.error("Error sending weather forecast", ex);
+        }
+
+        try {
+            TransactionBuilder builder;
+            builder = performInitialized("Sending forecast location");
+
+            int length = 2 + weatherSpec.location.getBytes().length;
+            ByteBuffer buf = ByteBuffer.allocate(length);
+            buf.order(ByteOrder.LITTLE_ENDIAN);
+            buf.put((byte) 8);
+            buf.put(weatherSpec.location.getBytes());
+            buf.put((byte) 0);
+
+
+            if (characteristicChunked != null) {
+                writeToChunked(builder, 1, buf.array());
+            } else {
+                builder.write(getCharacteristic(AmazfitBipService.UUID_CHARACTERISTIC_WEATHER), buf.array());
+            }
+
+            builder.queue(getQueue());
+        } catch (Exception ex) {
+            LOG.error("Error sending current forecast location", ex);
+        }
     }
 
     private HuamiSupport setDateDisplay(TransactionBuilder builder) {
@@ -1622,9 +1998,11 @@ public class HuamiSupport extends AbstractBTLEDeviceSupport {
     }
 
     private HuamiSupport setTimeFormat(TransactionBuilder builder) {
-        boolean is24Format = DateFormat.is24HourFormat(getContext());
-        LOG.info("Setting 24h time format to " + is24Format);
-        if (is24Format) {
+        GBPrefs gbPrefs = new GBPrefs(new Prefs(GBApplication.getDeviceSpecificSharedPrefs(gbDevice.getAddress())));
+        String timeFormat = gbPrefs.getTimeFormat();
+
+        LOG.info("Setting time format to " + timeFormat);
+        if (timeFormat.equals("24h")) {
             builder.write(getCharacteristic(HuamiService.UUID_CHARACTERISTIC_3_CONFIGURATION), HuamiService.DATEFORMAT_TIME_24_HOURS);
         } else {
             builder.write(getCharacteristic(HuamiService.UUID_CHARACTERISTIC_3_CONFIGURATION), HuamiService.DATEFORMAT_TIME_12_HOURS);
@@ -1909,8 +2287,22 @@ public class HuamiSupport extends AbstractBTLEDeviceSupport {
         return this;
     }
 
-    protected void writeToChunked(TransactionBuilder builder, int type, byte[] data) {
-        final int MAX_CHUNKLENGTH = 17;
+
+    private HuamiSupport setExposeHRThridParty(TransactionBuilder builder) {
+        boolean enable = HuamiCoordinator.getExposeHRThirdParty(gbDevice.getAddress());
+        LOG.info("Setting exposure of HR to third party apps to: " + enable);
+
+        if (enable) {
+            builder.write(getCharacteristic(HuamiService.UUID_CHARACTERISTIC_3_CONFIGURATION), HuamiService.COMMAND_ENBALE_HR_CONNECTION);
+        } else {
+            builder.write(getCharacteristic(HuamiService.UUID_CHARACTERISTIC_3_CONFIGURATION), HuamiService.COMMAND_DISABLE_HR_CONNECTION);
+        }
+
+        return this;
+    }
+
+    private void writeToChunked(TransactionBuilder builder, int type, byte[] data) {
+        final int MAX_CHUNKLENGTH = mMTU - 6;
         int remaining = data.length;
         byte count = 0;
         while (remaining > 0) {
@@ -1937,6 +2329,55 @@ public class HuamiSupport extends AbstractBTLEDeviceSupport {
         }
     }
 
+
+    protected HuamiSupport requestGPSVersion(TransactionBuilder builder) {
+        LOG.info("Requesting GPS version");
+        builder.write(getCharacteristic(HuamiService.UUID_CHARACTERISTIC_3_CONFIGURATION), HuamiService.COMMAND_REQUEST_GPS_VERSION);
+        return this;
+    }
+
+    private HuamiSupport requestAlarms(TransactionBuilder builder) {
+        LOG.info("Requesting alarms");
+        builder.write(getCharacteristic(HuamiService.UUID_CHARACTERISTIC_3_CONFIGURATION), HuamiService.COMMAND_REQUEST_ALARMS);
+        return this;
+    }
+
+    @Override
+    public String customStringFilter(String inputString) {
+        if (HuamiCoordinator.getUseCustomFont(gbDevice.getAddress())) {
+            return convertEmojiToCustomFont(inputString);
+        }
+        return inputString;
+    }
+
+
+    private String convertEmojiToCustomFont(String str) {
+        StringBuilder sb = new StringBuilder();
+        int i = 0;
+        while (i < str.length()) {
+            char charAt = str.charAt(i);
+            if (Character.isHighSurrogate(charAt)) {
+                int i2 = i + 1;
+                try {
+                    int codePoint = Character.toCodePoint(charAt, str.charAt(i2));
+                    if (codePoint < 127744 || codePoint > 129510) {
+                        sb.append(charAt);
+                    } else {
+                        sb.append((char) (codePoint - 83712));
+                        i = i2;
+                    }
+                } catch (StringIndexOutOfBoundsException e) {
+                    LOG.warn("error while converting emoji to custom font", e);
+                    sb.append(charAt);
+                }
+            } else {
+                sb.append(charAt);
+            }
+            i++;
+        }
+        return sb.toString();
+    }
+
     public void phase2Initialize(TransactionBuilder builder) {
         LOG.info("phase2Initialize...");
         requestBatteryInfo(builder);
@@ -1959,7 +2400,9 @@ public class HuamiSupport extends AbstractBTLEDeviceSupport {
         setInactivityWarnings(builder);
         setHeartrateSleepSupport(builder);
         setDisconnectNotification(builder);
+        setExposeHRThridParty(builder);
         setHeartrateMeasurementInterval(builder, getHeartRateMeasurementInterval());
+        requestAlarms(builder);
     }
 
     private int getHeartRateMeasurementInterval() {
@@ -1972,5 +2415,9 @@ public class HuamiSupport extends AbstractBTLEDeviceSupport {
 
     public UpdateFirmwareOperation createUpdateFirmwareOperation(Uri uri) {
         return new UpdateFirmwareOperation(uri, this);
+    }
+
+    public int getMTU() {
+        return mMTU;
     }
 }

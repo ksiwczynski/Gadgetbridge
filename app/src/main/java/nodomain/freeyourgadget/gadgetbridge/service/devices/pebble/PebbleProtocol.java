@@ -1,6 +1,6 @@
-/*  Copyright (C) 2015-2019 Andreas Shimokawa, Carsten Pfeiffer, Daniele
+/*  Copyright (C) 2015-2020 Andreas Shimokawa, Carsten Pfeiffer, Daniele
     Gobbetti, Frank Slezak, jcrode, Johann C. Rode, Julien Pivotto, Kevin Richter,
-    Sergio Lopez, Steffen Liebergeld, Uwe Hermann
+    Matej Drobnič, Sergio Lopez, Steffen Liebergeld, Uwe Hermann
 
     This file is part of Gadgetbridge.
 
@@ -65,6 +65,7 @@ import nodomain.freeyourgadget.gadgetbridge.model.NotificationType;
 import nodomain.freeyourgadget.gadgetbridge.model.Weather;
 import nodomain.freeyourgadget.gadgetbridge.model.WeatherSpec;
 import nodomain.freeyourgadget.gadgetbridge.service.serial.GBDeviceProtocol;
+import nodomain.freeyourgadget.gadgetbridge.util.GB;
 
 public class PebbleProtocol extends GBDeviceProtocol {
 
@@ -2268,6 +2269,9 @@ public class PebbleProtocol extends GBDeviceProtocol {
                         dataLogging.appUUID = datalogSession.uuid;
                         dataLogging.tag = datalogSession.tag;
                         devEvtsDataLogging = new GBDeviceEvent[]{dataLogging, null};
+                    }
+                    if (datalogSession.uuid.equals(UUID_ZERO) && (datalogSession.tag == 81 || datalogSession.tag == 83 || datalogSession.tag == 84)) {
+                        GB.signalActivityDataFinish();
                     }
                     mDatalogSessions.remove(id);
                 }

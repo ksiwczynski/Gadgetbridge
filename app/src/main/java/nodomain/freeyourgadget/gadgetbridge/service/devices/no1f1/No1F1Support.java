@@ -1,4 +1,4 @@
-/*  Copyright (C) 2017-2019 Andreas Shimokawa, Carsten Pfeiffer, Daniele
+/*  Copyright (C) 2017-2020 Andreas Shimokawa, Carsten Pfeiffer, Daniele
     Gobbetti, Pavel Elagin, protomors, Sebastian Kranz
 
     This file is part of Gadgetbridge.
@@ -628,7 +628,7 @@ public class No1F1Support extends AbstractBTLEDeviceSupport {
                         GB.updateTransferNotification(null,"", false, 100, getContext());
                         if (getDevice().isBusy()) {
                             getDevice().unsetBusyTask();
-                            getDevice().sendDeviceUpdateIntent(getContext());
+                            GB.signalActivityDataFinish();
                         }
                     }
                 } catch (Exception ex) {

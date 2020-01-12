@@ -1,4 +1,4 @@
-/*  Copyright (C) 2016-2019 Andreas Shimokawa, Carsten Pfeiffer, Daniele
+/*  Copyright (C) 2016-2020 Andreas Shimokawa, Carsten Pfeiffer, Daniele
     Gobbetti, Jean-François Greffier, Vadim Kaushan
 
     This file is part of Gadgetbridge.
@@ -85,7 +85,7 @@ public class MiScale2DeviceCoordinator extends AbstractDeviceCoordinator {
     }
 
     @Override
-    public int getBondingStyle(GBDevice device) {
+    public int getBondingStyle() {
         return super.BONDING_STYLE_NONE;
     }
 

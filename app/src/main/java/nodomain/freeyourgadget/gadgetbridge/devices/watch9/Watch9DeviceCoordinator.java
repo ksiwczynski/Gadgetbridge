@@ -1,4 +1,4 @@
-/*  Copyright (C) 2016-2019 Andreas Shimokawa, Carsten Pfeiffer, Daniele
+/*  Copyright (C) 2016-2020 Andreas Shimokawa, Carsten Pfeiffer, Daniele
     Gobbetti, maxirnilian, Vadim Kaushan
 
     This file is part of Gadgetbridge.
@@ -77,7 +77,7 @@ public class Watch9DeviceCoordinator extends AbstractDeviceCoordinator {
     }
 
     @Override
-    public int getBondingStyle(GBDevice deviceCandidate) {
+    public int getBondingStyle() {
         return BONDING_STYLE_NONE;
     }
 

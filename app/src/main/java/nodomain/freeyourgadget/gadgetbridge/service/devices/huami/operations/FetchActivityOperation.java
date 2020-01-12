@@ -1,4 +1,4 @@
-/*  Copyright (C) 2016-2019 Andreas Shimokawa, Carsten Pfeiffer, Daniele
+/*  Copyright (C) 2016-2020 Andreas Shimokawa, Carsten Pfeiffer, Daniele
     Gobbetti
 
     This file is part of Gadgetbridge.
@@ -85,6 +85,7 @@ public class FetchActivityOperation extends AbstractFetchOperation {
         }
 
         super.handleActivityFetchFinish(success);
+        GB.signalActivityDataFinish();
     }
 
     private boolean needsAnotherFetch(GregorianCalendar lastSyncTimestamp) {

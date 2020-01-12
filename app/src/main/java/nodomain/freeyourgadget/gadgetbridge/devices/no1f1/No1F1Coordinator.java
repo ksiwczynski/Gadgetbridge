@@ -1,4 +1,4 @@
-/*  Copyright (C) 2016-2019 Andreas Shimokawa, Carsten Pfeiffer, Daniele
+/*  Copyright (C) 2016-2020 Andreas Shimokawa, Carsten Pfeiffer, Daniele
     Gobbetti, José Rebelo, Petr Kadlec, protomors
 
     This file is part of Gadgetbridge.
@@ -71,7 +71,7 @@ public class No1F1Coordinator extends AbstractDeviceCoordinator {
     }
 
     @Override
-    public int getBondingStyle(GBDevice deviceCandidate) {
+    public int getBondingStyle() {
         return BONDING_STYLE_NONE;
     }
 

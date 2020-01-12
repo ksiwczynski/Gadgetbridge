@@ -1,4 +1,4 @@
-/*  Copyright (C) 2017-2019 Andreas Shimokawa, Carsten Pfeiffer
+/*  Copyright (C) 2017-2020 Andreas Shimokawa, Carsten Pfeiffer, MyTimeKill
 
     This file is part of Gadgetbridge.
 
@@ -109,9 +109,12 @@ public class AmazfitBipFirmwareInfo extends HuamiFirmwareInfo {
         crcToVersion.put(32576, "1.1.5.16");
         crcToVersion.put(28893, "1.1.5.24");
         crcToVersion.put(61710, "1.1.5.56");
+        crcToVersion.put(23387, "1.1.6.34");
 
         // Latin Firmware
         crcToVersion.put(52828, "1.1.5.36 (Latin)");
+        crcToVersion.put(60625, "1.1.6.30 (Latin)");
+        crcToVersion.put(17913, "1.1.6.32 (Latin)");
 
         // resources
         crcToVersion.put(12586, "0.0.8.74");
@@ -138,6 +141,8 @@ public class AmazfitBipFirmwareInfo extends HuamiFirmwareInfo {
         crcToVersion.put(5341, "1.1.5.02-24");
         crcToVersion.put(22662, "1.1.5.36");
         crcToVersion.put(24045, "1.1.5.56");
+        crcToVersion.put(37677, "1.1.6.30-32");
+        crcToVersion.put(26735, "1.1.6.34");
 
         // gps
         crcToVersion.put(61520, "9367,8f79a91,0,0,");
@@ -149,7 +154,16 @@ public class AmazfitBipFirmwareInfo extends HuamiFirmwareInfo {
 
         // font
         crcToVersion.put(61054, "8");
-        crcToVersion.put(62291, "9 (Latin)");
+        crcToVersion.put(62291, "9 (old Latin)");
+        crcToVersion.put(59577, "9 (Latin)");
+
+        // BipOS FW
+        crcToVersion.put(28373, "1.1.2.05 (BipOS 0.5)");
+        crcToVersion.put(62977, "1.1.2.05 (BipOS 0.5.1)");
+
+        // BipOS RES
+        crcToVersion.put(16303, "1.1.2.05 (BipOS 0.5)");
+        crcToVersion.put(61135, "1.1.2.05 (BipOS 0.5.1)");
     }
 
     public AmazfitBipFirmwareInfo(byte[] bytes) {
@@ -159,7 +173,7 @@ public class AmazfitBipFirmwareInfo extends HuamiFirmwareInfo {
     @Override
     protected HuamiFirmwareType determineFirmwareType(byte[] bytes) {
         if (ArrayUtils.startsWith(bytes, RES_HEADER) || ArrayUtils.startsWith(bytes, NEWRES_HEADER)) {
-            if ((bytes.length <= 100000) || (bytes.length > 700000)) { // dont know how to distinguish from Cor/Mi Band 3 .res
+            if (bytes.length <= 100000) { // dont know how to distinguish from Cor/Mi Band 3 .res
                 return HuamiFirmwareType.INVALID;
             }
             return HuamiFirmwareType.RES;
@@ -182,7 +196,7 @@ public class AmazfitBipFirmwareInfo extends HuamiFirmwareInfo {
         if (ArrayUtils.startsWith(bytes, NEWFT_HEADER)) {
             if (bytes[10] == 0x01) {
                 return HuamiFirmwareType.FONT;
-            } else if (bytes[10] == 0x02) {
+            } else if (bytes[10] == 0x02 || bytes[10] == 0x0A) {
                 return HuamiFirmwareType.FONT_LATIN;
             }
         }

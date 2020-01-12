@@ -1,5 +1,5 @@
-/*  Copyright (C) 2015-2019 Andreas Shimokawa, Carsten Pfeiffer, Daniele
-    Gobbetti, Dikay900, Pavel, Pavel Elagin
+/*  Copyright (C) 2015-2020 Andreas Shimokawa, Carsten Pfeiffer, Cre3per,
+    Daniele Gobbetti, Dikay900, Pavel, Pavel Elagin
 
     This file is part of Gadgetbridge.
 
@@ -346,7 +346,7 @@ public class LiveActivityFragment extends AbstractChartFragment {
 
         renderCharts();
 
-        // have to enable it again and again to keep it measureing
+        // have to enable it again and again to keep it measuring
         GBApplication.deviceService().onEnableRealtimeHeartRateMeasurement(true);
     }
 

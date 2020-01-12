@@ -1,4 +1,4 @@
-/*  Copyright (C) 2016-2019 Andreas Böhler, Andreas Shimokawa, Carsten
+/*  Copyright (C) 2016-2020 Andreas Böhler, Andreas Shimokawa, Carsten
     Pfeiffer, Daniele Gobbetti, José Rebelo
         based on code from BlueWatcher, https://github.com/masterjc/bluewatcher
 
@@ -58,7 +58,7 @@ public class CasioGB6900DeviceCoordinator extends AbstractDeviceCoordinator {
     }
 
     @Override
-    public int getBondingStyle(GBDevice deviceCandidate){
+    public int getBondingStyle(){
         return BONDING_STYLE_BOND;
     }
 

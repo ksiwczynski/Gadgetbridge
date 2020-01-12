@@ -1,4 +1,4 @@
-/*  Copyright (C) 2016-2019 Andreas Shimokawa, Daniele Gobbetti, João
+/*  Copyright (C) 2016-2020 Andreas Shimokawa, Daniele Gobbetti, João
     Paulo Barraca
 
     This file is part of Gadgetbridge.
@@ -61,7 +61,7 @@ public class BluetoothPairingRequestReceiver extends BroadcastReceiver {
 
         DeviceCoordinator coordinator = DeviceHelper.getInstance().getCoordinator(gbDevice);
         try {
-            if (coordinator.getBondingStyle(gbDevice) == DeviceCoordinator.BONDING_STYLE_NONE) {
+            if (coordinator.getBondingStyle() == DeviceCoordinator.BONDING_STYLE_NONE) {
                 LOG.info("Aborting unwanted pairing request");
                 abortBroadcast();
             }

@@ -4,9 +4,8 @@
     <string name="title_activity_controlcenter">Gadgetbridge</string>
     <string name="action_settings">Ustawienia</string>
     <string name="action_debug">Debuguj</string>
-    <string name="action_quit">Zakończ</string>
+    <string name="action_quit">Zamknij</string>
     <string name="controlcenter_fetch_activity_data">Synchronizuj</string>
-    <string name="controlcenter_start_sleepmonitor">Monitor snu (ALPHA)</string>
     <string name="controlcenter_find_device">Znajdź zgubione urządzenie</string>
     <string name="controlcenter_take_screenshot">Zrób zrzut ekranu</string>
     <string name="controlcenter_disconnect">Rozłącz</string>
@@ -32,12 +31,12 @@
     <!--Strings related to AppBlacklist-->
     <string name="title_activity_appblacklist">Czarna lista powiadomień</string>
     <!--Strings related to FwAppInstaller-->
-    <string name="title_activity_fw_app_insaller">Instalator FW/App</string>
-    <string name="fw_upgrade_notice">Zamierzasz zainstalować firmware %s zamiast aktualnie zainstalowanego na Twoim Mi Band.</string>
+    <string name="title_activity_fw_app_insaller">Instalator oprogramowania/aplikacji</string>
+    <string name="fw_upgrade_notice">Zamierzasz zainstalować %s.</string>
     <string name="miband_firmware_known">Te oprogramowanie zostało przetestowane i jest zgodne z Gadgetbridge.</string>
     <string name="miband_firmware_unknown_warning">Te oprogramowanie nie zostało przetestowane i może być niezgodne z Gadgetbridge. 
 \n 
-\nWgranie go na Twój Mi Band jest NIEZALECANE!</string>
+\nWgranie go jest NIEZALECANE!</string>
     <string name="miband_firmware_suggest_whitelist">Jeśli nadal chcesz kontynuować i po instalacji wszystko będzie działać prawidłowo, proszę powiadom programistów Gadgetbridge aby dodali wersję %s firmware do białej listy.</string>
     <!--Strings related to Settings-->
     <string name="title_activity_settings">Ustawienia</string>
@@ -59,7 +58,7 @@
     <string name="pref_title_notifications_sms">SMS</string>
     <string name="pref_title_notifications_pebblemsg">Wiadomości Pebble</string>
     <string name="pref_title_notifications_generic">Ogólna obsługa powiadomień</string>
-    <string name="pref_title_whenscreenon">...także gdy ekran jest włączony</string>
+    <string name="pref_title_whenscreenon">…także gdy ekran jest włączony</string>
     <string name="pref_title_notification_filter">Nie przeszkadzać</string>
     <string name="always">Zawsze</string>
     <string name="when_screen_off">Gdy ekran jest wyłączony</string>
@@ -93,7 +92,7 @@
     <string name="pref_summary_pebble_forceuntested">Włącz nie testowane funkcje. MUSISZ WIEDZIEĆ CO ROBISZ!</string>
     <string name="pref_title_pebble_forcele">Zawsze preferuj BLE</string>
     <string name="pref_title_pebble_mtu_limit">Limit MTU Pebble 2/LE GATT</string>
-    <string name="pref_summary_pebble_mtu_limit">Jeśli Twój Pebble 2/ Pebble LE nie działa jak należy spróbuj ustawić ten limit MTU (zakres 20-512)</string>
+    <string name="pref_summary_pebble_mtu_limit">Jeśli Twój Pebble 2/ Pebble LE nie działa jak należy spróbuj ustawić ten limit MTU (zakres 20–512)</string>
     <string name="pref_title_pebble_enable_applogs">Włącz logi aplikacji zegarka/opaski</string>
     <string name="pref_title_pebble_reconnect_attempts">Próby ponownego połączenia</string>
     <string name="not_connected">Nie połączony</string>
@@ -149,7 +148,7 @@
     <string name="initializing">Inicjalizacja</string>
     <string name="busy_task_fetch_activity_data">Pobieranie danych o aktywności</string>
     <string name="sleep_activity_date_range">Od %1$s do %2$s</string>
-    <string name="miband_prefs_wearside">Na której ręce noszone jest urządzenie\?</string>
+    <string name="prefs_wearside">Na której ręce noszone jest urządzenie\?</string>
     <string name="pref_screen_vibration_profile">Profil wibracji</string>
     <string name="vibration_profile_staccato">Słabe</string>
     <string name="vibration_profile_short">Krótkie</string>
@@ -168,7 +167,7 @@
     <string name="pref_screen_notification_profile_generic_social">Sieć społecznościowa</string>
     <string name="control_center_find_lost_device">Odnajdź zgubione urządzenie</string>
     <string name="control_center_cancel_to_stop_vibration">Anuluj by przerwać wibracje.</string>
-    <string name="title_activity_charts">Twoja aktywność</string>
+    <string name="title_activity_charts">Aktywność i Sen</string>
     <string name="title_activity_set_alarm">Konfiguruj alarmy</string>
     <string name="controlcenter_start_configure_alarms">Konfiguruj alarmy</string>
     <string name="title_activity_alarm_details">Szczegóły alarmu</string>
@@ -199,7 +198,7 @@
     <string name="notif_battery_low_bigtext_number_of_charges">Liczba ładowań: %s</string>
     <string name="sleepchart_your_sleep">Sen</string>
     <string name="weekstepschart_steps_a_week">Kroki (tyg.)</string>
-    <string name="activity_sleepchart_activity_and_sleep">Twoja aktywność i sen</string>
+    <string name="activity_sleepchart_activity_and_sleep">Aktywność</string>
     <string name="updating_firmware">Aktualizacja oprogramowania…</string>
     <string name="fwapp_install_device_not_ready">Plik nie może być zainstalowany, urządzenie nie gotowe.</string>
     <string name="installhandler_firmware_name">%1$s: %2$s %3$s</string>
@@ -238,7 +237,7 @@
     <string name="fwinstaller_firmware_not_compatible_to_device">Ten firmware nie jest kompatybilny z tym urządzeniem</string>
     <string name="miband_prefs_reserve_alarm_calendar">Alarmy zarezerwowane dla nadchodzących zdarzeń</string>
     <string name="miband_prefs_hr_sleep_detection">Użyj czujnika tętna alby poprawić detekcje snu</string>
-    <string name="miband2_prefs_dateformat">Mi2: Format daty</string>
+    <string name="miband2_prefs_dateformat">Format daty</string>
     <string name="dateformat_time">Czas</string>
     <string name="waiting_for_reconnect">Oczekiwanie na ponowne połączenie</string>
     <string name="activity_prefs_about_you">O Tobie</string>
@@ -313,7 +312,6 @@
     <string name="pref_screen_notification_profile_generic_chat">Czat</string>
     <string name="stats_title">Strefy prędkości</string>
     <string name="stats_y_axis_label">Kroków na minutę</string>
-    <string name="amazfitbip_firmware">Firmware Amazfit Bip %1s</string>
     <string name="calories">Kalorie</string>
     <string name="distance">Dystans</string>
     <string name="clock">Zegar</string>
@@ -321,7 +319,7 @@
     <string name="battery">Bateria</string>
     <string name="dateformat_date_time">Data i czas</string>
     <string name="mi2_prefs_button_actions">Akcje przycisku</string>
-    <string name="mi2_prefs_button_actions_summary">Wybierz akcję po przyciśnięciu przycisku na Mi Band 2</string>
+    <string name="mi2_prefs_button_actions_summary">Wybierz akcję po przyciśnięciu przycisku</string>
     <string name="mi2_prefs_button_press_count">Licznik wciśnięć przycisku</string>
     <string name="mi2_prefs_button_press_count_summary">Ilość przyciśnięć w celu uruchomienia rozsyłania wiadomości</string>
     <string name="mi2_prefs_button_action">Uruchom przycisk akcji</string>
@@ -337,7 +335,6 @@
     <string name="prefs_title_all_day_heart_rate">Całodobowy pomiar tętna</string>
     <string name="pref_header_auto_export">Automatyczny eksport</string>
     <string name="pref_summary_auto_export_interval">Eksportowanie co %d godzin</string>
-    <string name="preferences_amazfitbip_settings">Ustawienia Amazfit Bip</string>
     <string name="prefs_title_heartrate_measurement_interval">Całodobowy pomiar tętna</string>
     <string name="interval_one_minute">raz na minutę</string>
     <string name="interval_five_minutes">raz na 5 minut</string>
@@ -349,31 +346,31 @@
     <string name="activity_type_running">Bieganie</string>
     <string name="activity_type_swimming">Pływanie</string>
     <string name="activity_type_treadmill">Bieżnia</string>
-    <string name="controlcenter_connect">Połącz</string>
+    <string name="controlcenter_connect">Połącz…</string>
     <string name="controlcenter_navigation_drawer_open">Otwórz okno nawigacji</string>
     <string name="controlcenter_navigation_drawer_close">Zamknij okno nawigacji</string>
-    <string name="controlcenter_calibrate_device">Kalibracja urządzenia</string>
+    <string name="controlcenter_calibrate_device">Kalibracja Urządzenia</string>
     <string name="blacklist_all_for_notifications">Zablokuj wszystkie powiadomienia</string>
     <string name="whitelist_all_for_notifications">Zezwól na wszystkie powiadomienia</string>
-    <string name="fw_upgrade_notice_amazfitbip">Zamierzasz zainstalować firmware %s na Twoim Amazfit Bip. 
-\n 
-\nPamiętaj, aby instalować pliki w kolejności: .fw, potem .res i na końcu .gps. Twój zegarek zresetuje się po instalacji pliku .fw. 
-\n 
+    <string name="fw_upgrade_notice_amazfitbip">Zamierzasz zainstalować firmware %s na Twoim Amazfit Bip.
+\n
+\nPamiętaj, aby instalować pliki w kolejności: .fw, potem .res i na końcu .gps. Twój zegarek zresetuje się po instalacji pliku .fw.
+\n
 \nUwaga: Nie instaluj plików .res i .gps jeśli są takie same jak poprzednio zainstalowane w zegarku.
-\n 
+\n
 \nROBISZ TO NA WŁASNE RYZYKO!</string>
     <string name="fw_upgrade_notice_amazfitcor">Zamierzasz zainstalować firmware %s na Twoim Amazfit Cor. 
 \n 
 \nPamiętaj, aby najpierw zainstalować plik .fw, a następnie plik .res. Twój zegarek zresetuje się po instalacji pliku .fw. 
 \n 
-\nUwaga: Nie instaluj pliku .res jeśli jest taki sam jak poprzednio zainstalowany. 
+\nUwaga: Nie musisz instalować pliku .res jeśli jest dokładnie taki sam jak poprzednio zainstalowany. 
 \n 
 \nROBISZ TO NA WŁASNE RYZYKO!</string>
     <string name="fw_upgrade_notice_miband3">Zamierzasz zainstalować oprogramowanie %s na Twoim Mi Band 3. 
 \n 
-\nPamiętaj, aby najpierw zainstalować plik .fw, a następnie .res. Twój zegarek zresetuje się po instalacji pliku .fw 
+\nPamiętaj, aby najpierw zainstalować plik .fw, a następnie .res. Twój zegarek zresetuje się po instalacji pliku .fw. 
 \n 
-\nUwaga: Nie instaluj plików .res jeśli jest taki sam jak poprzednio zainstalowany. 
+\nUwaga: Nie musisz instalować pliku .res jeśli jest taki sam jak poprzednio zainstalowany. 
 \n 
 \nROBISZ TO NA WŁASNE RYZYKO!</string>
     <string name="fw_multi_upgrade_notice">Zamierzasz zainstalować oprogramowanie %1$s oraz %2$s, na miejsce obecnie zainstalowanego na Twoim Mi Band.</string>
@@ -398,7 +395,6 @@
     <string name="pref_title_pebble_always_ack_pebblekit">Natychmiastowe potwierdzenia PebbleKit</string>
     <string name="pref_summary_pebble_always_ack_pebblekit">Spowoduje, że wiadomości wysyłane do zewnętrznych aplikacji będą zawsze natychmiast potwierdzane</string>
     <string name="pref_title_screentime">Czas włączenia ekranu</string>
-    <string name="preferences_id115_settings">Ustawienia ID115</string>
     <string name="prefs_screen_orientation">Orientacja ekranu</string>
     <string name="pref_title_auto_export_enabled">Auto eksport włączony</string>
     <string name="pref_title_auto_export_location">Ścieżka eksportu</string>
@@ -406,9 +402,6 @@
     <string name="pref_auto_fetch_summary">Pobranie danych nastąpi po odblokowaniu ekranu. Działa tylko jeśli blokada jest włączona!</string>
     <string name="pref_auto_fetch_limit_fetches">Minimalny odstęp czasu pomiędzy pobraniami</string>
     <string name="pref_auto_fetch_limit_fetches_summary">Pobieranie co %d minut(y)</string>
-    <string name="preferences_miband2_settings">Ustawienia Mi Band 2</string>
-    <string name="preferences_miband3_settings">Ustawienia Mi Band 3</string>
-    <string name="preferences_amazfitcor_settings">Ustawienia Amazfit Cor</string>s
     <string name="horizontal">Poziomo</string>
     <string name="vertical">Pionowo</string>
     <string name="discovery_connected_devices_hint">Upewnij się, że urządzenie (opaska/smartwatch) jest wykrywalne. Aktualnie połączone urządzenia prawdopodobnie nie będą wykrywalne. Na Androidzie 6+ włącz dostęp do lokalizacji (GPS). Wyłącz Privacy Guard dla Gadgetbridge, ponieważ mogą ze sobą kolidować. Jeżeli urządzenie nie zostanie wykryte w przeciągu paru minut, spróbuj ponownie po ponownym uruchomieniu telefonu.</string>
@@ -419,7 +412,7 @@
     <string name="notif_export_failed_title">Eksport bazy danych nie udał się! Proszę sprawdź ustawienia.</string>
     <string name="weeksleepchart_sleep_a_week">Sen (tyg.)</string>
     <string name="weeksleepchart_today_sleep_description">Sen dzisiaj, cel: %1$s</string>
-    <string name="lack_of_sleep">Brak snu: %1$s</string>
+    <string name="lack_of_sleep">Niedobór snu: %1$s</string>
     <string name="no_limit">Bez ograniczeń</string>
     <string name="seconds_5">5 sekund</string>
     <string name="seconds_10">10 sekund</string>
@@ -538,9 +531,9 @@
     <string name="language_and_region_prefs">Ustawienia językowe i regionalne</string>
     <string name="pref_title_auto_export_interval">Częstość eksportowania</string>
     <string name="unit_imperial">imperialne</string>
-    <string name="debugactivity_really_factoryreset_title">Czy na pewno zresetować\?</string>
+    <string name="debugactivity_really_factoryreset_title">Czy na pewno zresetować do ustawień fabrycznych\?</string>
     <string name="debugactivity_really_factoryreset">Po zresetowaniu wszelkie dane na urządzeniu zostaną usunięte (jeśli jest to wspierane). Urządzenia Xiaomi/Huami zmieniają także adres MAC Bluetooth, w ten sposób pojawiają się jako nowe urządzenia w Gadgetbridge.</string>
-    <string name="overslept">Zaspałem: %1$s</string>
+    <string name="overslept">Nadmiar snu: %1$s</string>
     <string name="overstep">Przekroczenie: %1$d</string>
     <string name="you_did_not_sleep">Nie spałeś</string>
     <string name="mi2_prefs_button_press_broadcast">Wiadomość do wysłania</string>
@@ -557,4 +550,6 @@
     <string name="error_creating_directory_for_logfiles">Błąd tworzenia folderu na pliki log: %1$s</string>
     <string name="DEVINFO_HR_VER">"Puls: "</string>
     <string name="filter_mode_whitelist">Pokazuj gdy zawiera słowa</string>
+    <string name="pref_chart_heartrate_color_red">Czerwony</string>
+    <string name="mi2_prefs_button_press_broadcast_default_value" translatable="false">nodomain.freeyourgadget.gadgetbridge.ButtonPressed</string>
 </resources>

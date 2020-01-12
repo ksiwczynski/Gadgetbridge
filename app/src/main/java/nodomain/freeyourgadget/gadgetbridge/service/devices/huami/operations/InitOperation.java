@@ -1,4 +1,4 @@
-/*  Copyright (C) 2016-2019 Andreas Shimokawa, Carsten Pfeiffer
+/*  Copyright (C) 2016-2020 Andreas Shimokawa, Carsten Pfeiffer
 
     This file is part of Gadgetbridge.
 
@@ -94,7 +94,7 @@ public class InitOperation extends AbstractBTLEOperation<HuamiSupport> {
 
         String authKey = sharedPrefs.getString("authkey", null);
         if (authKey != null && !authKey.isEmpty()) {
-            byte[] srcBytes = authKey.getBytes();
+            byte[] srcBytes = authKey.trim().getBytes();
             if (authKey.length() == 34 && authKey.substring(0, 2).equals("0x")) {
                 srcBytes = GB.hexStringToByteArray(authKey.substring(2));
             }
@@ -139,8 +139,8 @@ public class InitOperation extends AbstractBTLEOperation<HuamiSupport> {
                         value[2] == HuamiService.AUTH_SUCCESS) {
                     TransactionBuilder builder = createTransactionBuilder("Authenticated, now initialize phase 2");
                     builder.add(new SetDeviceStateAction(getDevice(), GBDevice.State.INITIALIZING, getContext()));
-                    huamiSupport.requestDeviceInfo(builder);
                     huamiSupport.enableFurtherNotifications(builder, true);
+                    huamiSupport.requestDeviceInfo(builder);
                     huamiSupport.phase2Initialize(builder);
                     huamiSupport.phase3Initialize(builder);
                     huamiSupport.setInitialized(builder);
